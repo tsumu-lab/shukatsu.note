@@ -1,0 +1,34 @@
+import InternNoteCard from "./InternNoteCard";
+import AddInternNoteForm from "./AddInternNoteForm";
+
+type InternNote = { id: number; content: string };
+
+export default function InternTab({
+  companyId,
+  internNotes,
+  createInternNote,
+  updateInternNote,
+  deleteInternNote,
+}: {
+  companyId: number;
+  internNotes: InternNote[];
+  createInternNote: (formData: FormData) => void;
+  updateInternNote: (formData: FormData) => void;
+  deleteInternNote: (formData: FormData) => void;
+}) {
+  return (
+    <div className="space-y-3">
+      {internNotes.map((n) => (
+        <InternNoteCard
+          key={n.id}
+          note={n}
+          companyId={companyId}
+          updateInternNote={updateInternNote}
+          deleteInternNote={deleteInternNote}
+        />
+      ))}
+      {internNotes.length === 0 && <p className="text-sm text-gray-400">まだメモがありません</p>}
+      <AddInternNoteForm companyId={companyId} createInternNote={createInternNote} />
+    </div>
+  );
+}
