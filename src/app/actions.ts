@@ -74,22 +74,21 @@ export async function updateEntrySheet(formData: FormData) {
   const userId = await requireUserId();
   const id = Number(formData.get("id"));
   const companyId = Number(formData.get("companyId"));
-  await assertOwnsCompany(companyId, userId);
-
   const question = formData.get("question") as string;
   const answer = formData.get("answer") as string;
   const memo = formData.get("memo") as string;
   const maxLengthRaw = formData.get("maxLength") as string;
   const maxLength = maxLengthRaw ? Number(maxLengthRaw) : null;
 
-  // idとcompanyIdが両方一致する行だけ更新（他人のESを誤って書き換えないため）
+  // companyのuserIdまで一気にチェックしながら更新
   await prisma.entrySheet.updateMany({
-    where: { id, companyId },
+    where: { id, companyId, company: { userId } },
     data: { question, answer, memo: memo || null, maxLength },
   });
 
   redirect(`/companies/${companyId}?tab=es`);
 }
+
 
 // リマインダーの持ち主を直接確認する（企業経由ではなく、Reminder自身のuserIdを見る）
 async function assertOwnsReminder(id: number, userId: string) {
@@ -129,39 +128,51 @@ export async function createReminder(formData: FormData) {
 export async function toggleReminder(formData: FormData) {
   const userId = await requireUserId();
   const id = Number(formData.get("id"));
-  const reminder = await assertOwnsReminder(id, userId);
+  const companyIdRaw = formData.get("companyId") as string;
+  const companyId = companyIdRaw ? Number(companyIdRaw) : null;
   const completed = formData.get("completed") === "true";
 
-  await prisma.reminder.update({ where: { id }, data: { completed } });
-  redirect(reminder.companyId ? `/companies/${reminder.companyId}` : "/");
+  // idとuserIdが両方一致する時だけ更新される（他人のものは何も起きない）
+  await prisma.reminder.updateMany({
+    where: { id, userId },
+    data: { completed },
+  });
+
+  redirect(companyId ? `/companies/${companyId}` : "/");
 }
 
 // タイトル・日付・メモを更新
 export async function updateReminder(formData: FormData) {
   const userId = await requireUserId();
   const id = Number(formData.get("id"));
-  const reminder = await assertOwnsReminder(id, userId);
-
+  const companyIdRaw = formData.get("companyId") as string;
+  const companyId = companyIdRaw ? Number(companyIdRaw) : null;
   const title = formData.get("title") as string;
   const dueDate = formData.get("dueDate") as string;
   const memo = formData.get("memo") as string;
 
-  await prisma.reminder.update({
-    where: { id },
+  await prisma.reminder.updateMany({
+    where: { id, userId },
     data: { title, dueDate: dueDate ? new Date(dueDate) : null, memo: memo || null },
   });
 
-  redirect(reminder.companyId ? `/companies/${reminder.companyId}` : "/");
+  redirect(companyId ? `/companies/${companyId}` : "/");
 }
+
 
 // 削除（論理削除）
 export async function deleteReminder(formData: FormData) {
   const userId = await requireUserId();
   const id = Number(formData.get("id"));
-  const reminder = await assertOwnsReminder(id, userId);
+  const companyIdRaw = formData.get("companyId") as string;
+  const companyId = companyIdRaw ? Number(companyIdRaw) : null;
 
-  await prisma.reminder.update({ where: { id }, data: { deletedAt: new Date() } });
-  const base = reminder.companyId ? `/companies/${reminder.companyId}` : "/";
+  await prisma.reminder.updateMany({
+    where: { id, userId },
+    data: { deletedAt: new Date() },
+  });
+
+  const base = companyId ? `/companies/${companyId}` : "/";
   redirect(`${base}?undo=reminder&undoId=${id}`);
 }
 
@@ -372,13 +383,17 @@ export async function restoreCompany(formData: FormData) {
   redirect("/");
 }
 
-// ESを削除
+/// ESを削除
 export async function deleteEntrySheet(formData: FormData) {
   const userId = await requireUserId();
   const id = Number(formData.get("id"));
   const companyId = Number(formData.get("companyId"));
-  await assertOwnsCompany(companyId, userId);
-  await prisma.entrySheet.update({ where: { id }, data: { deletedAt: new Date() } });
+
+  await prisma.entrySheet.updateMany({
+    where: { id, companyId, company: { userId } },
+    data: { deletedAt: new Date() },
+  });
+
   redirect(`/companies/${companyId}?tab=es&undo=entrySheet&undoId=${id}`);
 }
 

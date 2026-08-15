@@ -88,6 +88,7 @@ export default function ReminderBoardItem({
     return (
       <form ref={formRef} action={updateReminder} onBlur={handleFormBlur} className="py-1 space-y-1">
         <input type="hidden" name="id" value={item.id} />
+        <input type="hidden" name="companyId" value="" />
         <div className="flex items-center gap-2">
           <span className="w-4 h-4 rounded-full border-2 border-gray-400 flex-shrink-0" />
           <input
