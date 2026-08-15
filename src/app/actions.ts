@@ -59,9 +59,11 @@ export async function addEntrySheet(formData: FormData) {
   const question = formData.get("question") as string;
   const answer = formData.get("answer") as string;
   const memo = formData.get("memo") as string;
+  const maxLengthRaw = formData.get("maxLength") as string;
+  const maxLength = maxLengthRaw ? Number(maxLengthRaw) : null;
 
   await prisma.entrySheet.create({
-    data: { companyId, question, answer, memo: memo || null },
+    data: { companyId, question, answer, memo: memo || null, maxLength },
   });
 
   redirect(`/companies/${companyId}?tab=es`);
@@ -77,11 +79,13 @@ export async function updateEntrySheet(formData: FormData) {
   const question = formData.get("question") as string;
   const answer = formData.get("answer") as string;
   const memo = formData.get("memo") as string;
+  const maxLengthRaw = formData.get("maxLength") as string;
+  const maxLength = maxLengthRaw ? Number(maxLengthRaw) : null;
 
   // idとcompanyIdが両方一致する行だけ更新（他人のESを誤って書き換えないため）
   await prisma.entrySheet.updateMany({
     where: { id, companyId },
-    data: { question, answer, memo: memo || null },
+    data: { question, answer, memo: memo || null, maxLength },
   });
 
   redirect(`/companies/${companyId}?tab=es`);

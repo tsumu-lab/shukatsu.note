@@ -1,4 +1,4 @@
-"use client"; // ここから下はブラウザ側で動くコンポーネント（クリックで状態を切り替えるため）
+"use client";
 
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
@@ -7,7 +7,8 @@ type EntrySheet = {
   id: number;
   question: string;
   answer: string;
-  memo: string | null; // ★追加
+  memo: string | null;
+  maxLength: number | null;
 };
 
 export default function EntrySheetCard({
@@ -21,29 +22,54 @@ export default function EntrySheetCard({
   updateEntrySheet: (formData: FormData) => void;
   deleteEntrySheet: (formData: FormData) => void;
 }) {
-  // true: 編集フォーム表示 / false: 読み取り専用表示
   const [isEditing, setIsEditing] = useState(false);
+  const [answerText, setAnswerText] = useState(es.answer); // 文字数カウント用
 
   if (isEditing) {
+    const isOver = es.maxLength ? answerText.length > es.maxLength : false;
+
     return (
       <form action={updateEntrySheet} className="space-y-2">
         <input type="hidden" name="id" value={es.id} />
         <input type="hidden" name="companyId" value={companyId} />
-        <input
-          name="question"
-          defaultValue={es.question}
-          required
-          autoFocus //デフォで編集
-          className="w-full px-1 py-1 font-medium"
-        />
-        <textarea
-          name="answer"
-          defaultValue={es.answer}
-          required
-          rows={6}
-          className="w-full rounded p-3 text-sm bg-gray-100"
-        />
-        {/* ★追加：メモ欄（未入力でもOK） */}
+
+        <div className="flex items-center gap-2">
+          <input
+            name="question"
+            defaultValue={es.question}
+            required
+            autoFocus
+            className="flex-1 px-1 py-1 font-medium"
+          />
+          <input
+            name="maxLength"
+            type="number"
+            min={1}
+            defaultValue={es.maxLength ?? ""}
+            placeholder="字数"
+            className="w-16 border rounded px-1 py-1 text-xs text-gray-500"
+          />
+          <span className="text-xs text-gray-400">字以内</span>
+        </div>
+
+        <div className="relative">
+          <textarea
+            name="answer"
+            value={answerText}
+            onChange={(e) => setAnswerText(e.target.value)}
+            rows={6}
+            className="w-full rounded p-3 pb-6 text-sm bg-gray-100"
+          />
+          <span
+            className={`absolute bottom-2 right-3 text-xs ${
+              isOver ? "text-red-500" : "text-gray-400"
+            }`}
+          >
+            {answerText.length}
+            {es.maxLength ? ` / ${es.maxLength}` : ""}
+          </span>
+        </div>
+
         <textarea
           name="memo"
           defaultValue={es.memo ?? ""}
@@ -51,10 +77,12 @@ export default function EntrySheetCard({
           placeholder="メモ（任意）"
           className="w-full rounded p-3 text-sm bg-yellow-50"
         />
-        <button type="submit" className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
-          保存
-        </button>
-        <button
+
+        <div className="flex items-center gap-2">
+          <button type="submit" className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
+            保存
+          </button>
+          <button
             type="submit"
             formAction={deleteEntrySheet}
             onClick={(e) => {
@@ -65,31 +93,29 @@ export default function EntrySheetCard({
           >
             <Trash2 size={14} />
           </button>
+        </div>
       </form>
     );
   }
 
-  // 通常時：読み取り専用の表示
   return (
     <div className="space-y-2">
       <div className="flex justify-between items-center">
-        <p className="font-medium">{es.question}</p>
-        <button
-          onClick={() => setIsEditing(true)}
-          aria-label="編集"
-          className="text-gray-400 hover:text-blue-600"
-        >
+        <p className="font-medium">
+          {es.question}
+          {es.maxLength && (
+            <span className="text-xs text-gray-400 font-normal ml-2">
+              ({es.maxLength}字以内)
+            </span>
+          )}
+        </p>
+        <button onClick={() => setIsEditing(true)} aria-label="編集" className="text-gray-400 hover:text-blue-600">
           <Pencil size={14} />
         </button>
       </div>
-      <p className="text-sm whitespace-pre-wrap bg-gray-100 rounded p-3">
-        {es.answer}
-      </p>
-      {/* ★追加：メモがある時だけ表示 */}
+      <p className="text-sm whitespace-pre-wrap bg-gray-100 rounded p-3">{es.answer}</p>
       {es.memo && (
-        <p className="text-sm whitespace-pre-wrap bg-yellow-50 rounded p-3">
-          {es.memo}
-        </p>
+        <p className="text-sm whitespace-pre-wrap bg-yellow-50 rounded p-3">{es.memo}</p>
       )}
     </div>
   );

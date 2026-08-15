@@ -40,6 +40,7 @@ model EntrySheet {
   question  String
   answer    String
   memo      String?
+  maxLength Int?      // ★追加：文字数の上限（任意）
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // ★追加
