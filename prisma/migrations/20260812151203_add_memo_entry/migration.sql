@@ -1,9 +1,0 @@
--- CreateTable
-CREATE TABLE "MemoEntry" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "companyId" INTEGER NOT NULL,
-    "content" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "MemoEntry_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
