@@ -127,7 +127,7 @@ export default async function CompanyDetail({
             toggleReminder={toggleReminder}
             updateReminder={updateReminder}
             deleteReminder={deleteReminder}
-            startOpen={String(r.id) === openReminder} // ★追加
+            //startOpen={String(r.id) === openReminder} // ★追加
           />
         ))}
         {company.reminders.length === 0 && (

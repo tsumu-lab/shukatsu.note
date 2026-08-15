@@ -1,5 +1,5 @@
 // クリックした座標が、テキストの何文字目にあたるかを計算する
-export function getClickOffset(e: React.MouseEvent<HTMLElement>): number {
+export function getClickOffset(e: React.MouseEvent): number {
   const doc = document as any;
 
   if (doc.caretRangeFromPoint) {
