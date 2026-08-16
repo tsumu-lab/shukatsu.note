@@ -10,6 +10,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      authorization: {
+        params: {
+          prompt: "select_account", // ★追加：毎回Googleのアカウント選択画面を出す
+        },
+      },
     }),
   ],
   callbacks: {
