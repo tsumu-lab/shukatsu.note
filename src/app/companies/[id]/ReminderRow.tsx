@@ -33,6 +33,7 @@ export default function ReminderRow({
   const [isEditing, setIsEditing] = useState(false);
   const [entryField, setEntryField] = useState<EntryField>("title");
   const [caretOffset, setCaretOffset] = useState(0);
+  const [optimisticDone, setOptimisticDone] = useState(reminder.completed); // ★追加
 
   const formRef = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -138,7 +139,10 @@ export default function ReminderRow({
   return (
     <div className="px-4 py-2">
       <div className="flex items-center gap-3">
-        <form action={toggleReminder}>
+        <form
+          action={toggleReminder}
+          onSubmit={() => setOptimisticDone(!optimisticDone)} // ★押した瞬間に見た目だけ先に切り替える
+        >
           <input type="hidden" name="id" value={reminder.id} />
           <input type="hidden" name="companyId" value={companyId} />
           <input type="hidden" name="completed" value={(!reminder.completed).toString()} />
@@ -146,7 +150,7 @@ export default function ReminderRow({
             type="submit"
             aria-label="完了を切り替え"
             className={`w-5 h-5 rounded-full border-2 flex-shrink-0 ${
-              reminder.completed ? "bg-gray-400 border-gray-400" : "border-gray-400"
+              optimisticDone ? "bg-gray-400 border-gray-400" : "border-gray-400"
             }`}
           />
         </form>
@@ -154,7 +158,7 @@ export default function ReminderRow({
         <button
           onClick={(e) => openAt("title", e)}
           className={`flex-1 text-left text-sm ${
-            reminder.completed ? "line-through text-gray-400" : ""
+            optimisticDone ? "line-through text-gray-400" : ""
           }`}
         >
           {reminder.title}

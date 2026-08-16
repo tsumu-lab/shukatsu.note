@@ -1,24 +1,18 @@
-import { prisma } from "@/lib/prisma";
 import { groupReminders } from "@/lib/groupReminders";
-import { requireUserId } from "@/lib/auth-helpers";
 import { updateReminder, deleteReminder } from "@/app/actions";
 import ReminderBoardItem from "./ReminderBoardItem";
 
-export default async function ReminderBoard() {
-  const userId = await requireUserId();
+type ReminderWithCompany = {
+  id: number;
+  title: string;
+  dueDate: Date | null;
+  memo: string | null;
+  companyId: number | null;
+  company: { id: number; name: string } | null;
+};
 
-  const reminders = await prisma.reminder.findMany({
-    where: {
-      userId,
-      completed: false,
-      deletedAt: null,
-      OR: [{ companyId: null }, { company: { deletedAt: null } }],
-    },
-    include: { company: true },
-  });
-
+export default function ReminderBoard({ reminders }: { reminders: ReminderWithCompany[] }) {
   const groups = groupReminders(reminders);
-
   if (groups.length === 0) return null;
 
   return (

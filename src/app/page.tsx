@@ -12,17 +12,30 @@ import { createReminder } from "@/app/actions";
 
 
 export default async function Home() {
-  const userId = await requireUserId(); // ★追加：未ログインならここでログイン画面に飛ぶ
-  const companies = await prisma.company.findMany({
-    where: { userId, deletedAt: null}, // ★追加：自分の企業だけ取得
-    orderBy: { createdAt: "desc" },
-  });
+  const userId = await requireUserId();
+
+  // 企業一覧とリマインダー一覧を「同時に」取得する（今までは順番待ちしていた）
+  const [companies, reminders] = await Promise.all([
+    prisma.company.findMany({
+      where: { userId, deletedAt: null },
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.reminder.findMany({
+      where: {
+        userId,
+        completed: false,
+        deletedAt: null,
+        OR: [{ companyId: null }, { company: { deletedAt: null } }],
+      },
+      include: { company: true },
+    }),
+  ]);
 
   return (
     <main className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">就活ノート</h1>
       <UndoBanner actions={{ company: restoreCompany }} />
-      <ReminderBoard />
+      <ReminderBoard reminders={reminders} />
       <HomeAddReminderForm companies={companies} createReminder={createReminder} />
       <Link href="/companies/new" className="inline-block mb-6 text-blue-600 underline">
         ＋ 企業を追加
