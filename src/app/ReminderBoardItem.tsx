@@ -71,7 +71,7 @@ export default function ReminderBoardItem({
   const CheckButton = () => (
     <form action={toggleReminder} onSubmit={() => setIsCompleting(true)}>
       <input type="hidden" name="id" value={item.id} />
-      <input type="hidden" name="companyId" value={item.companyId ?? ""} />
+      <input type="hidden" name="companyId" value="" />
       <input type="hidden" name="completed" value="true" />
       <button
         type="submit"
