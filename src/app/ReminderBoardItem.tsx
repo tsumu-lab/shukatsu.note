@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Calendar, Pencil, Trash2 } from "lucide-react";
 import { getClickOffset } from "@/lib/clickToCaret";
-import { toDatetimeLocalValue, formatReminderDate } from "@/lib/dateFormat";
 
 type Item = {
   id: number;
@@ -19,24 +18,26 @@ type EntryField = "title" | "date" | "memo";
 
 export default function ReminderBoardItem({
   item,
+  toggleReminder,
   updateReminder,
   deleteReminder,
 }: {
   item: Item;
+  toggleReminder: (formData: FormData) => void;
   updateReminder: (formData: FormData) => void;
   deleteReminder: (formData: FormData) => void;
 }) {
-  // フックは常に呼ぶ必要があるため、企業/個人の分岐より前に全部まとめておく
   const [isEditing, setIsEditing] = useState(false);
   const [entryField, setEntryField] = useState<EntryField>("title");
   const [caretOffset, setCaretOffset] = useState(0);
+  const [isCompleting, setIsCompleting] = useState(false); // ★追加：押した瞬間に消すため
 
   const formRef = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
   const memoRef = useRef<HTMLTextAreaElement>(null);
 
-  const dueDateValue = item.dueDate ? toDatetimeLocalValue(new Date(item.dueDate)) : "";
+  const dueDateValue = item.dueDate ? new Date(item.dueDate).toISOString().slice(0, 10) : "";
 
   const openAt = (field: EntryField, e?: React.MouseEvent) => {
     setCaretOffset(e ? getClickOffset(e) : 0);
@@ -64,11 +65,26 @@ export default function ReminderBoardItem({
     }
   };
 
-  // 企業に紐づくもの：編集マークを押すと企業ページに飛び、そちらで編集モードが自動で開く
+  // ★追加：押した瞬間、この項目をアイテムごと消す（実際の保存は裏で進む）
+  if (isCompleting) return null;
+
+  const CheckButton = () => (
+    <form action={toggleReminder} onSubmit={() => setIsCompleting(true)}>
+      <input type="hidden" name="id" value={item.id} />
+      <input type="hidden" name="companyId" value={item.companyId ?? ""} />
+      <input type="hidden" name="completed" value="true" />
+      <button
+        type="submit"
+        aria-label="完了にする"
+        className="w-4 h-4 rounded-full border-2 border-gray-400 flex-shrink-0 hover:bg-gray-200"
+      />
+    </form>
+  );
+
   if (item.companyId) {
     return (
       <div className="flex items-center gap-2 text-sm py-1">
-        <span className="w-4 h-4 rounded-full border-2 border-gray-400 flex-shrink-0" />
+        <CheckButton />
         <Link href={`/companies/${item.companyId}`} className="flex-1 hover:text-blue-600">
           {item.company?.name} {item.title}
         </Link>
@@ -83,14 +99,13 @@ export default function ReminderBoardItem({
     );
   }
 
-  // 個人用：編集マークを押すとその場でタイトル・日付・メモをまとめて編集
   if (isEditing) {
     return (
       <form ref={formRef} action={updateReminder} onBlur={handleFormBlur} className="py-1 space-y-1">
         <input type="hidden" name="id" value={item.id} />
         <input type="hidden" name="companyId" value="" />
         <div className="flex items-center gap-2">
-          <span className="w-4 h-4 rounded-full border-2 border-gray-400 flex-shrink-0" />
+          <CheckButton />
           <input
             ref={titleRef}
             name="title"
@@ -103,7 +118,7 @@ export default function ReminderBoardItem({
             <input
               ref={dateRef}
               name="dueDate"
-              type="datetime-local"
+              type="date"
               defaultValue={dueDateValue}
               className="text-xs text-gray-500 bg-transparent border-none p-0 focus:outline-none"
             />
@@ -135,7 +150,7 @@ export default function ReminderBoardItem({
 
   return (
     <div className="flex items-center gap-2 text-sm py-1">
-      <span className="w-4 h-4 rounded-full border-2 border-gray-400 flex-shrink-0" />
+      <CheckButton />
       <button onClick={(e) => openAt("title", e)} className="flex-1 text-left">
         <span className="text-xs text-gray-400">（個人）</span> {item.title}
       </button>

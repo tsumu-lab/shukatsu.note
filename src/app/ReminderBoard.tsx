@@ -1,6 +1,7 @@
 import { groupReminders } from "@/lib/groupReminders";
 import { updateReminder, deleteReminder } from "@/app/actions";
 import ReminderBoardItem from "./ReminderBoardItem";
+import { updateReminder, deleteReminder, toggleReminder } from "@/app/actions";
 
 type ReminderWithCompany = {
   id: number;
@@ -25,6 +26,7 @@ export default function ReminderBoard({ reminders }: { reminders: ReminderWithCo
               <ReminderBoardItem
                 key={item.id}
                 item={item}
+                toggleReminder={toggleReminder}
                 updateReminder={updateReminder}
                 deleteReminder={deleteReminder}
               />
