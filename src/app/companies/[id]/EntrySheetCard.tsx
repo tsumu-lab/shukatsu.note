@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
+import { useEditGuard } from "./EditGuardContext";
 
 type EntrySheet = {
   id: number;
@@ -23,6 +24,18 @@ export default function EntrySheetCard({
   deleteEntrySheet: (formData: FormData) => void;
 }) {
   const [isEditing, setIsEditing] = useState(false);
+
+  const { markEditing } = useEditGuard();
+
+  const enterEdit = () => {
+    markEditing(`es-${es.id}`, true);
+    setIsEditing(true);
+  };
+  const exitEdit = () => {
+    markEditing(`es-${es.id}`, false);
+    setIsEditing(false);
+  };
+
   const [answerText, setAnswerText] = useState(es.answer); // 文字数カウント用
 
   if (isEditing) {
@@ -79,14 +92,18 @@ export default function EntrySheetCard({
         />
 
         <div className="flex items-center gap-2">
-          <button type="submit" className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
+          <button type="submit" onClick={exitEdit} className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
             保存
+          </button>
+          <button type="button" onClick={exitEdit} className="text-sm text-gray-500">
+            キャンセル
           </button>
           <button
             type="submit"
             formAction={deleteEntrySheet}
             onClick={(e) => {
               if (!confirm("この設問を削除しますか？")) e.preventDefault();
+              else exitEdit();
             }}
             aria-label="削除"
             className="text-gray-400 hover:text-red-500"
@@ -109,7 +126,7 @@ export default function EntrySheetCard({
             </span>
           )}
         </p>
-        <button onClick={() => setIsEditing(true)} aria-label="編集" className="text-gray-400 hover:text-blue-600">
+        <button onClick={enterEdit} aria-label="編集" className="text-gray-400 hover:text-blue-600">
           <Pencil size={14} />
         </button>
       </div>

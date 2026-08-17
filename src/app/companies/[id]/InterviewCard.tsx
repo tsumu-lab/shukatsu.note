@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
+import { useEditGuard } from "./EditGuardContext";
 
 type Interview = {
   id: number;
@@ -22,6 +23,16 @@ export default function InterviewCard({
   deleteInterview: (formData: FormData) => void;
 }) {
   const [isEditing, setIsEditing] = useState(false);
+  const { markEditing } = useEditGuard();
+
+  const enterEdit = () => {
+    markEditing(`iv-${interview.id}`, true);
+    setIsEditing(true);
+  };
+  const exitEdit = () => {
+    markEditing(`iv-${interview.id}`, false);
+    setIsEditing(false);
+  };
 
   if (isEditing) {
     return (
@@ -50,20 +61,26 @@ export default function InterviewCard({
           placeholder="メモ（任意）"
           className="w-full rounded p-3 text-sm bg-yellow-50"
         />
-        <button type="submit" className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
-          保存
-        </button>
-        <button
+        <div className="flex items-center gap-2">
+          <button type="submit" onClick={exitEdit} className="bg-gray-800 text-white px-3 py-1 rounded text-sm">
+            保存
+          </button>
+          <button type="button" onClick={exitEdit} className="text-sm text-gray-500">
+            キャンセル
+          </button>
+          <button
             type="submit"
             formAction={deleteInterview}
             onClick={(e) => {
               if (!confirm("この面接記録を削除しますか？")) e.preventDefault();
+              else exitEdit();
             }}
             aria-label="削除"
             className="text-gray-400 hover:text-red-500"
           >
-          <Trash2 size={14} />
-        </button>
+            <Trash2 size={14} />
+          </button>
+        </div>
       </form>
     );
   }
@@ -72,7 +89,7 @@ export default function InterviewCard({
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <p className="font-medium">{interview.question}</p>
-        <button onClick={() => setIsEditing(true)} aria-label="編集" className="text-gray-400 hover:text-blue-600">
+        <button onClick={enterEdit} aria-label="編集" className="text-gray-400 hover:text-blue-600">
           <Pencil size={14} />
         </button>
       </div>

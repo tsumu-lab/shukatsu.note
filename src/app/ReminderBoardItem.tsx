@@ -85,13 +85,22 @@ export default function ReminderBoardItem({
     return (
       <div className="flex items-center gap-2 text-sm py-1">
         <CheckButton />
-        <Link href={`/companies/${item.companyId}`} className="flex-1 hover:text-blue-600">
-          {item.company?.name} {item.title}
+        <Link
+          href={`/companies/${item.companyId}`}
+          className="flex items-center gap-2 flex-1 min-w-0 hover:text-blue-600"
+        >
+          <span
+            className="flex-shrink-0 overflow-x-auto whitespace-nowrap no-scrollbar"
+            style={{ width: "10em" }}
+          >
+            {item.company?.name}
+          </span>
+          <span className="truncate">{item.title}</span>
         </Link>
         <Link
           href={`/companies/${item.companyId}?openReminder=${item.id}`}
           aria-label="編集"
-          className="text-gray-300 hover:text-blue-600"
+          className="text-gray-300 hover:text-blue-600 flex-shrink-0"
         >
           <Pencil size={12} />
         </Link>
@@ -151,10 +160,16 @@ export default function ReminderBoardItem({
   return (
     <div className="flex items-center gap-2 text-sm py-1">
       <CheckButton />
-      <button onClick={(e) => openAt("title", e)} className="flex-1 text-left">
-        <span className="text-xs text-gray-400">（個人）</span> {item.title}
+      <button
+        onClick={(e) => openAt("title", e)}
+        className="flex items-center gap-2 flex-1 min-w-0 text-left"
+      >
+        <span className="flex-shrink-0 text-xs text-gray-400" style={{ width: "10em" }}>
+          （個人）
+        </span>
+        <span className="truncate">{item.title}</span>
       </button>
-      <button onClick={() => openAt("title")} aria-label="編集" className="text-gray-300 hover:text-blue-600">
+      <button onClick={() => openAt("title")} aria-label="編集" className="text-gray-300 hover:text-blue-600 flex-shrink-0">
         <Pencil size={12} />
       </button>
     </div>

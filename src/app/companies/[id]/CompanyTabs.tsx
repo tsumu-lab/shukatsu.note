@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useEditGuard } from "./EditGuardContext";
 
 const TABS = [
   { key: "memo", label: "メモ" },
@@ -32,12 +33,13 @@ export default function CompanyTabs({
     isValidTab(initialTab) ? initialTab : "memo"
   );
 
+  const { confirmLeave } = useEditGuard();
+
   const router = useRouter();
   const pathname = usePathname();
 
-  // ★追加：タブを押した時、画面上の切り替えと同時にURLも更新する
-  // (これで手動リロードしてもタブが保たれる)
   const handleSelect = (key: TabKey) => {
+    if (!confirmLeave()) return; // 編集中で「キャンセル」を選んだら、タブ切り替えを止める
     setActive(key);
     router.replace(`${pathname}?tab=${key}`, { scroll: false });
   };

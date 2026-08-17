@@ -39,6 +39,8 @@ import CompanyMemoTab from "./CompanyMemoTab";
 import InterviewTab from "./InterviewTab";
 import InternTab from "./InternTab";
 import UndoBanner from "@/app/UndoBanner";
+import { EditGuardProvider } from "./EditGuardContext";
+import BackButton from "./BackButton";
 
 export default async function CompanyDetail({
   params,
@@ -66,9 +68,8 @@ export default async function CompanyDetail({
 
   return (
     <main className="max-w-2xl mx-auto p-6">
-      <Link href="/" className="text-sm text-blue-600 underline">
-        ← 戻る
-      </Link>
+     <EditGuardProvider>
+      <BackButton />
 
       <h1 className="text-2xl font-bold mt-2 mb-1">{company.name}</h1>
       <UndoBanner
@@ -184,6 +185,7 @@ export default async function CompanyDetail({
           }
         />
       </div>
+     </EditGuardProvider>
     </main>
   );
 }
