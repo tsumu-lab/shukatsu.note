@@ -1,5 +1,4 @@
 "use client";
-// 「リマインダーを追加」ボタンを押すまでは入力欄を隠しておく部品
 
 import { useState } from "react";
 
@@ -14,27 +13,36 @@ export default function AddReminderForm({
 
   if (!isAdding) {
     return (
-      <button onClick={() => setIsAdding(true)} className="text-sm text-blue-600 underline">
+      <button
+        onClick={() => setIsAdding(true)}
+        className="w-full text-left text-sm rounded-xl px-3 py-2"
+        style={{ color: "var(--color-accent)" }}
+      >
         ＋ リマインダーを追加
       </button>
     );
   }
 
   return (
-    <form action={createReminder} className="flex gap-2 items-end flex-wrap">
+    <form action={createReminder} className="flex gap-2 items-end flex-wrap p-2">
       <input type="hidden" name="companyId" value={companyId} />
-      <div>
-        <label className="block text-xs mb-1">タイトル</label>
-        <input name="title" required className="border rounded px-2 py-1 text-sm" />
-      </div>
-      <div>
-        <label className="block text-xs mb-1">締切日</label>
-        <input name="dueDate" type="datetime-local" className="border rounded px-2 py-1 text-sm" />
-      </div>
-      <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+      <input
+        name="title"
+        required
+        placeholder="タイトル"
+        className="rounded px-2 py-1 text-sm border-none focus:outline-none"
+        style={{ backgroundColor: "var(--color-paper)" }}
+      />
+      <input
+        name="dueDate"
+        type="datetime-local"
+        className="rounded px-2 py-1 text-sm border-none focus:outline-none"
+        style={{ backgroundColor: "var(--color-paper)" }}
+      />
+      <button type="submit" className="text-white px-3 py-1 rounded text-sm" style={{ backgroundColor: "var(--color-accent)" }}>
         追加
       </button>
-      <button type="button" onClick={() => setIsAdding(false)} className="text-sm text-gray-500">
+      <button type="button" onClick={() => setIsAdding(false)} className="text-sm" style={{ color: "var(--color-taupe)" }}>
         キャンセル
       </button>
     </form>

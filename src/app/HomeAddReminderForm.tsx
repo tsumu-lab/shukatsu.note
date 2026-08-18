@@ -17,7 +17,8 @@ export default function HomeAddReminderForm({
     return (
       <button
         onClick={() => setIsAdding(true)}
-        className="w-full text-left text-sm text-blue-600 border border-dashed rounded-lg p-3 mb-6"
+        className="w-full text-left text-sm rounded-xl px-3 py-2 mt-1"
+        style={{ color: "var(--color-accent)" }}
       >
         ＋ リマインダーを追加
       </button>
@@ -25,23 +26,28 @@ export default function HomeAddReminderForm({
   }
 
   return (
-    <form
-      action={createReminder}
-      className="border rounded-lg p-3 mb-6 space-y-2"
-    >
+    <form action={createReminder} className="rounded-xl p-3 mt-1 space-y-2" style={{ backgroundColor: "var(--color-paper)" }}>
       <div className="flex gap-2 flex-wrap">
         <input
           name="title"
           required
           autoFocus
           placeholder="タイトル"
-          className="border rounded px-2 py-1 text-sm flex-1 min-w-[120px]"
+          className="rounded px-2 py-1 text-sm flex-1 min-w-[120px] border-none focus:outline-none"
+          style={{ backgroundColor: "var(--color-surface)" }}
         />
-        <input name="dueDate" type="datetime-local" className="border rounded px-2 py-1 text-sm" />
+        <input
+          name="dueDate"
+          type="datetime-local"
+          className="rounded px-2 py-1 text-sm border-none focus:outline-none"
+          style={{ backgroundColor: "var(--color-surface)" }}
+        />
       </div>
-
-      {/* companyIdを空("")のままにすると個人用として保存される */}
-      <select name="companyId" className="border rounded px-2 py-1 text-sm w-full">
+      <select
+        name="companyId"
+        className="rounded px-2 py-1 text-sm w-full border-none focus:outline-none"
+        style={{ backgroundColor: "var(--color-surface)" }}
+      >
         <option value="">個人（企業に紐づけない）</option>
         {companies.map((c) => (
           <option key={c.id} value={c.id}>
@@ -49,12 +55,11 @@ export default function HomeAddReminderForm({
           </option>
         ))}
       </select>
-
       <div className="flex gap-2">
-        <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+        <button type="submit" className="text-white px-3 py-1 rounded text-sm" style={{ backgroundColor: "var(--color-accent)" }}>
           追加
         </button>
-        <button type="button" onClick={() => setIsAdding(false)} className="text-sm text-gray-500">
+        <button type="button" onClick={() => setIsAdding(false)} className="text-sm" style={{ color: "var(--color-taupe)" }}>
           キャンセル
         </button>
       </div>

@@ -67,7 +67,7 @@ export default async function CompanyDetail({
   if (!company || company.userId !== userId || company.deletedAt) notFound();
 
   return (
-    <main className="max-w-2xl mx-auto p-6">
+    <main className="max-w-[43rem] mx-auto p-6">
      <EditGuardProvider>
       <BackButton />
 
@@ -119,7 +119,9 @@ export default async function CompanyDetail({
       </div>
 
       <h2 className="text-lg font-semibold mt-8 mb-3">リマインダー</h2>
-      <div className="border rounded-lg divide-y mb-3">
+       <div
+        className="surface-card rounded-2xl p-2 mb-3 space-y-1.5"
+       >
         {company.reminders.map((r) => (
           <ReminderRow
             key={`${r.id}-${r.updatedAt.getTime()}`}
@@ -128,11 +130,12 @@ export default async function CompanyDetail({
             toggleReminder={toggleReminder}
             updateReminder={updateReminder}
             deleteReminder={deleteReminder}
-            //startOpen={String(r.id) === openReminder} // ★追加
           />
         ))}
         {company.reminders.length === 0 && (
-          <p className="text-sm text-gray-400 px-4 py-3">リマインダーはまだありません</p>
+          <p className="text-sm px-3 py-3" style={{ color: "var(--color-taupe)" }}>
+            リマインダーはまだありません
+          </p>
         )}
       </div>
       <AddReminderForm companyId={company.id} createReminder={createReminder} />

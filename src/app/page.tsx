@@ -35,8 +35,10 @@ export default async function Home() {
     <main className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">就活ノート</h1>
       <UndoBanner actions={{ company: restoreCompany }} />
-      <ReminderBoard reminders={reminders} />
-      <HomeAddReminderForm companies={companies} createReminder={createReminder} />
+      <div className="surface-card rounded-2xl p-3 mb-6">
+        <ReminderBoard reminders={reminders} />
+        <HomeAddReminderForm companies={companies} createReminder={createReminder} />
+      </div>
       <Link href="/companies/new" className="inline-block mb-6 text-blue-600 underline">
         ＋ 企業を追加
       </Link>
@@ -53,7 +55,7 @@ export default async function Home() {
         )}
 
         {companies.map((company) => (
-          <div key={company.id} className="border rounded-lg p-4 relative">
+          <div key={company.id} className="surface-card rounded-2xl p-4 relative">
             <DeleteCompanyButton
               companyId={company.id}
               companyName={company.name}

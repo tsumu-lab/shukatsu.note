@@ -44,3 +44,59 @@ a:hover {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* === デザイン刷新：色の変数 === */
+:root {
+  --color-paper: #FFFAF2;        /* ページ全体の背景（白クリーム） */
+  --color-surface: #FFFFFF;      /* カードの背景（白） */
+  --color-accent: #4e6b2c;       /* ボタンなどのメインカラー */
+  --color-ink: #3A332B;
+  --color-taupe: #8A8072;
+  --color-rust: #B5533C;
+
+  --color-company: #4A7FA5;          /* 企業に紐づくリマインダー */
+  --color-company-tint: #DCEEF7;
+  --color-company-tint-hover: #C7E2F0;
+
+  --color-personal: #C97B93;         /* 個人のリマインダー */
+  --color-personal-tint: #F9DDE3;
+  --color-personal-tint-hover: #F3C7D2;
+}
+
+.surface-card {
+  background-color: var(--color-surface);
+}
+
+/* リマインダー1件分。typeで色を出し分け、hoverで少し濃くなる */
+.reminder-row {
+  border-radius: 12px;
+  padding: 10px 14px;
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+.reminder-row.company {
+  background-color: var(--color-company-tint);
+}
+.reminder-row.company:hover {
+  background-color: var(--color-company-tint-hover);
+}
+.reminder-row.personal {
+  background-color: var(--color-personal-tint);
+}
+.reminder-row.personal:hover {
+  background-color: var(--color-personal-tint-hover);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-body), sans-serif;
+}
+
+h1, h2, h3, .font-heading {
+  font-family: var(--font-heading), sans-serif;
+}
+
+.surface-card {
+  background-color: var(--color-surface);
+}

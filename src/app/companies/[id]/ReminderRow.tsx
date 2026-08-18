@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Calendar, Trash2 } from "lucide-react";
 import { getClickOffset } from "@/lib/clickToCaret";
-import { toDatetimeLocalValue, formatReminderDate } from "@/lib/dateFormat";
+import { formatReminderDate } from "@/lib/dateFormat";
 
 type Reminder = {
   id: number;
@@ -33,16 +33,16 @@ export default function ReminderRow({
   const [isEditing, setIsEditing] = useState(false);
   const [entryField, setEntryField] = useState<EntryField>("title");
   const [caretOffset, setCaretOffset] = useState(0);
-  const [optimisticDone, setOptimisticDone] = useState(reminder.completed); // ★追加
 
   const formRef = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const dateRef = useRef<HTMLInputElement>(null);
   const memoRef = useRef<HTMLTextAreaElement>(null);
 
-  const dueDateValue = reminder.dueDate ? toDatetimeLocalValue(new Date(reminder.dueDate)) : "";
+  const dueDateValue = reminder.dueDate
+    ? new Date(reminder.dueDate).toISOString().slice(0, 10)
+    : "";
 
-  // トップ画面の鉛筆マークから ?openReminder=このID で飛んできたら、自動で編集モードを開く
   useEffect(() => {
     if (searchParams.get("openReminder") === String(reminder.id)) {
       setEntryField("title");
@@ -83,14 +83,17 @@ export default function ReminderRow({
         ref={formRef}
         action={updateReminder}
         onBlur={handleFormBlur}
-        className="px-4 py-2 space-y-1"
+        className="rounded-xl px-3 py-2 space-y-1"
+        style={{ backgroundColor: "var(--color-surface)" }}
       >
         <input type="hidden" name="id" value={reminder.id} />
         <input type="hidden" name="companyId" value={companyId} />
 
         <div className="flex items-center gap-3">
-          <span className="w-5 h-5 rounded-full border-2 border-gray-400 flex-shrink-0" />
-
+          <span
+            className="w-5 h-5 rounded-full border-2 flex-shrink-0"
+            style={{ borderColor: "var(--color-company)" }}
+          />
           <input
             ref={titleRef}
             name="title"
@@ -98,18 +101,17 @@ export default function ReminderRow({
             required
             className="flex-1 text-sm bg-transparent border-none p-0 focus:outline-none"
           />
-
           <div className="flex items-center gap-1">
-            <Calendar size={14} className="text-gray-400" />
+            <Calendar size={14} style={{ color: "var(--color-taupe)" }} />
             <input
               ref={dateRef}
               name="dueDate"
               type="datetime-local"
               defaultValue={dueDateValue}
-              className="text-xs text-gray-500 bg-transparent border-none p-0 focus:outline-none"
+              className="text-xs bg-transparent border-none p-0 focus:outline-none"
+              style={{ color: "var(--color-taupe)" }}
             />
           </div>
-
           <button
             type="submit"
             formAction={deleteReminder}
@@ -117,7 +119,8 @@ export default function ReminderRow({
               if (!confirm("このリマインダーを削除しますか？")) e.preventDefault();
             }}
             aria-label="削除"
-            className="text-gray-300 hover:text-red-500 flex-shrink-0"
+            className="flex-shrink-0"
+            style={{ color: "var(--color-taupe)" }}
           >
             <Trash2 size={14} />
           </button>
@@ -129,43 +132,48 @@ export default function ReminderRow({
           defaultValue={reminder.memo ?? ""}
           rows={2}
           placeholder="メモ（任意）"
-          className="w-full rounded p-2 text-sm bg-yellow-50 border-none focus:outline-none ml-8"
-          style={{ width: "calc(100% - 2rem)" }}
+          className="w-full rounded p-2 text-sm border-none focus:outline-none ml-8"
+          style={{ width: "calc(100% - 2rem)", backgroundColor: "var(--color-paper)" }}
         />
       </form>
     );
   }
 
   return (
-    <div className="px-4 py-2">
+    <div className="reminder-row company">
       <div className="flex items-center gap-3">
-        <form
-          action={toggleReminder}
-          onSubmit={() => setOptimisticDone(!optimisticDone)} // ★押した瞬間に見た目だけ先に切り替える
-        >
+        <form action={toggleReminder}>
           <input type="hidden" name="id" value={reminder.id} />
           <input type="hidden" name="companyId" value={companyId} />
           <input type="hidden" name="completed" value={(!reminder.completed).toString()} />
           <button
             type="submit"
             aria-label="完了を切り替え"
-            className={`w-5 h-5 rounded-full border-2 flex-shrink-0 ${
-              optimisticDone ? "bg-gray-400 border-gray-400" : "border-gray-400"
-            }`}
+            className="w-5 h-5 rounded-full border-2 flex-shrink-0"
+            style={{
+              borderColor: "var(--color-company)",
+              backgroundColor: reminder.completed ? "var(--color-accent)" : "transparent",
+            }}
           />
         </form>
 
         <button
           onClick={(e) => openAt("title", e)}
-          className={`flex-1 text-left text-sm ${
-            optimisticDone ? "line-through text-gray-400" : ""
-          }`}
+          className="flex-1 text-left text-sm font-medium"
+          style={{
+            color: "var(--color-ink)",
+            textDecoration: reminder.completed ? "line-through" : "none",
+          }}
         >
           {reminder.title}
         </button>
 
         {reminder.dueDate && (
-          <button onClick={() => openAt("date")} className="text-xs text-gray-500">
+          <button
+            onClick={() => openAt("date")}
+            className="text-xs flex-shrink-0"
+            style={{ color: "var(--color-taupe)" }}
+          >
             {formatReminderDate(new Date(reminder.dueDate))}
           </button>
         )}
@@ -174,8 +182,8 @@ export default function ReminderRow({
       {reminder.memo && (
         <button
           onClick={(e) => openAt("memo", e)}
-          className="block text-left text-sm whitespace-pre-wrap bg-yellow-50 rounded p-2 mt-1 ml-8"
-          style={{ width: "calc(100% - 2rem)" }}
+          className="block text-left text-sm whitespace-pre-wrap rounded p-2 mt-1 ml-8"
+          style={{ width: "calc(100% - 2rem)", backgroundColor: "var(--color-surface)" }}
         >
           {reminder.memo}
         </button>
