@@ -62,7 +62,7 @@ a:hover {
   --color-personal: #C97B93;         /* 個人のリマインダー */
   --color-personal-tint: #F9DDE3;
   --color-personal-tint-hover: #F3C7D2;
-  --color-company-bg:  #FFFAF2 /* #FEFEFA; トップの企業カード／企業ページ背景 */
+  --color-company-bg:  #FEFEFA /* #FEFEFA; トップの企業カード／企業ページ背景 */
 }
 
 .surface-card {

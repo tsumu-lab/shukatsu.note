@@ -3,10 +3,10 @@ import Link from "next/link";
 import ReminderBoard from "./ReminderBoard";
 import { requireUserId } from "@/lib/auth-helpers";
 import CopyButton from "./CopyButton";
-import { deleteCompany, restoreCompany } from "@/app/actions";
+import { deleteCompany, restoreCompany, togglePinCompany } from "@/app/actions";
 import UndoBanner from "./UndoBanner";
 import { Trash2 } from "lucide-react";
-import DeleteCompanyButton from "./DeleteCompanyButton";
+import PinButton from "./PinButton";
 import HomeAddReminderForm from "./HomeAddReminderForm";
 import { createReminder } from "@/app/actions";
 import AuthButton from "./AuthButton";
@@ -19,7 +19,7 @@ export default async function Home() {
   const [companies, reminders] = await Promise.all([
     prisma.company.findMany({
       where: { userId, deletedAt: null },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ pinned: "desc" },{ createdAt: "desc" }],
     }),
     prisma.reminder.findMany({
       where: {
@@ -61,10 +61,11 @@ export default async function Home() {
 
         {companies.map((company) => (
           <div key={company.id} className="rounded-2xl p-4 relative" style={{ backgroundColor: "var(--color-company-bg)" }}>
-            <DeleteCompanyButton
-              companyId={company.id}
-              companyName={company.name}
-              deleteCompany={deleteCompany}
+                        <PinButton
+              pinned={company.pinned}
+              formData={{ id: company.id }}
+              action={togglePinCompany}
+              className="absolute top-3 right-3"
             />
 
             <Link href={`/companies/${company.id}`} className="font-semibold hover:text-blue-600">

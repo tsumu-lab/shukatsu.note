@@ -40,6 +40,8 @@ import InternTab from "./InternTab";
 import UndoBanner from "@/app/UndoBanner";
 import BackButton from "./BackButton";
 import { EditGuardProvider } from "./EditGuardContext";
+import DeleteCompanyButton from "./DeleteCompanyButton";
+import { deleteCompany } from "@/app/actions";
 
 export default async function CompanyDetail({
   params,
@@ -55,11 +57,11 @@ export default async function CompanyDetail({
   const company = await prisma.company.findUnique({
     where: { id: Number(id) },
     include: {
-      entrySheets: { where: { deletedAt: null } },
+      entrySheets: { where: { deletedAt: null }, orderBy: { pinned: "desc" } },
       reminders: { where: { deletedAt: null }, orderBy: { createdAt: "asc" } },
-      memoEntries: { where: { deletedAt: null } },
-      interviews: { where: { deletedAt: null } },
-      internNotes: { where: { deletedAt: null } },
+      memoEntries: { where: { deletedAt: null }, orderBy: { pinned: "desc" } },
+      interviews: { where: { deletedAt: null }, orderBy: { pinned: "desc" } },
+      internNotes: { where: { deletedAt: null }, orderBy: { pinned: "desc" } },
     },
   });
 
@@ -82,35 +84,38 @@ export default async function CompanyDetail({
             }}
           />
 
-          <form action={updateStatus} className="flex gap-3 items-end mt-4">
-            <input type="hidden" name="id" value={company.id} />
-            <div>
-              <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>状況</label>
-              <select name="status" defaultValue={company.status} className="border-none rounded px-2 py-1" style={{ backgroundColor: "var(--color-surface)" }}>
-                <option>検討中</option>
-                <option>ES提出済み</option>
-                <option>一次面接</option>
-                <option>二次面接</option>
-                <option>最終面接</option>
-                <option>内定</option>
-                <option>不合格</option>
-                <option>辞退</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>優先度</label>
-              <select name="priority" defaultValue={company.priority} className="border-none rounded px-2 py-1" style={{ backgroundColor: "var(--color-surface)" }}>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
-            </div>
-            <button type="submit" className="text-white px-3 py-1 rounded text-sm" style={{ backgroundColor: "var(--color-accent)" }}>
-              更新
-            </button>
-          </form>
+          <div className="flex gap-3 items-end mt-4">
+            <form action={updateStatus} className="flex gap-3 items-end">
+              <input type="hidden" name="id" value={company.id} />
+              <div>
+                <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>状況</label>
+                <select name="status" defaultValue={company.status} className="border-none rounded px-2 py-1" style={{ backgroundColor: "var(--color-surface)" }}>
+                  <option>検討中</option>
+                  <option>ES提出済み</option>
+                  <option>一次面接</option>
+                  <option>二次面接</option>
+                  <option>最終面接</option>
+                  <option>内定</option>
+                  <option>不合格</option>
+                  <option>辞退</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>優先度</label>
+                <select name="priority" defaultValue={company.priority} className="border-none rounded px-2 py-1" style={{ backgroundColor: "var(--color-surface)" }}>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+              <button type="submit" className="text-white px-3 py-1 rounded text-sm" style={{ backgroundColor: "var(--color-accent)" }}>
+                更新
+              </button>
+            </form>
+            <DeleteCompanyButton companyId={company.id} companyName={company.name} deleteCompany={deleteCompany} />
+          </div>
 
           {/* マイページ欄：白カードでまとめる */}
           <div className="surface-card rounded-2xl p-3 mt-4 mb-4 space-y-1">

@@ -2,8 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { getClickOffset } from "@/lib/clickToCaret";
+import PinButton from "@/app/PinButton";
+import { togglePinMemoEntry } from "@/app/actions";
 
-type MemoEntry = { id: number; content: string };
+type MemoEntry = { id: number; content: string; pinned: boolean };
 
 export default function MemoEntryCard({
   entry,
@@ -63,9 +65,21 @@ export default function MemoEntryCard({
     );
   }
 
-  return (
-    <button onClick={handleOpen} className="block text-left w-full text-sm whitespace-pre-wrap bg-gray-50 rounded p-3">
-      {entry.content}
-    </button>
+    return (
+    <div className="flex items-start gap-2">
+      <button
+        onClick={handleOpen}
+        className="flex-1 text-left text-sm whitespace-pre-wrap rounded p-3"
+        style={{ backgroundColor: "var(--color-paper)" }}
+      >
+        {entry.content}
+      </button>
+      <PinButton
+        pinned={entry.pinned}
+        formData={{ id: entry.id, companyId }}
+        action={togglePinMemoEntry}
+        className="pt-3"
+      />
+    </div>
   );
 }

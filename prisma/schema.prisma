@@ -31,7 +31,7 @@ model Company {
   memoEntries MemoEntry[]
   createdAt   DateTime     @default(now())
   deletedAt   DateTime?    // ★追加
-  inned Boolean @default(false)
+  pinned Boolean @default(false)
 }
 
 model EntrySheet {

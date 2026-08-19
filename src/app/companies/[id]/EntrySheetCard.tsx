@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEditGuard } from "./EditGuardContext";
+import PinButton from "@/app/PinButton";
+import { togglePinEntrySheet } from "@/app/actions";
 
 type EntrySheet = {
   id: number;
@@ -10,6 +12,7 @@ type EntrySheet = {
   answer: string;
   memo: string | null;
   maxLength: number | null;
+  pinned: boolean;
 };
 
 export default function EntrySheetCard({
@@ -116,18 +119,21 @@ export default function EntrySheetCard({
 
   return (
     <div className="space-y-2">
-      <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center">
         <p className="font-medium">
           {es.question}
           {es.maxLength && (
-            <span className="text-xs text-gray-400 font-normal ml-2">
+            <span className="text-xs font-normal ml-2" style={{ color: "var(--color-taupe)" }}>
               ({es.maxLength}字以内)
             </span>
           )}
         </p>
-        <button onClick={enterEdit} aria-label="編集" className="text-gray-400 hover:text-blue-600">
-          <Pencil size={14} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={enterEdit} aria-label="編集" className="text-gray-400 hover:text-blue-600">
+            <Pencil size={14} />
+          </button>
+          <PinButton pinned={es.pinned} formData={{ id: es.id, companyId }} action={togglePinEntrySheet} />
+        </div>
       </div>
       <p className="text-sm whitespace-pre-wrap bg-gray-100 rounded p-3">{es.answer}</p>
       {es.memo && (

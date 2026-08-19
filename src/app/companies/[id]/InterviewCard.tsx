@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { useEditGuard } from "./EditGuardContext";
+import PinButton from "@/app/PinButton";
+import { togglePinInterview } from "@/app/actions";
 
 type Interview = {
   id: number;
   question: string;
   answer: string | null;
   memo: string | null;
+  pinned: boolean;
 };
 
 export default function InterviewCard({
@@ -88,9 +91,12 @@ export default function InterviewCard({
     <div className="space-y-2">
       <div className="flex justify-between items-center">
         <p className="font-medium">{interview.question}</p>
-        <button onClick={enterEdit} aria-label="編集" className="text-gray-400 hover:text-blue-600">
-          <Pencil size={14} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={enterEdit} aria-label="編集" className="text-gray-400 hover:text-blue-600">
+            <Pencil size={14} />
+          </button>
+          <PinButton pinned={interview.pinned} formData={{ id: interview.id, companyId }} action={togglePinInterview} />
+        </div>
       </div>
       {interview.answer && (
         <p className="text-sm whitespace-pre-wrap bg-gray-100 rounded p-3">{interview.answer}</p>

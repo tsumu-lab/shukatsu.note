@@ -6,10 +6,12 @@ export default function DeleteCompanyButton({
   companyId,
   companyName,
   deleteCompany,
+  className = "",
 }: {
   companyId: number;
   companyName: string;
   deleteCompany: (formData: FormData) => void;
+  className?: string;
 }) {
   return (
     <form
@@ -17,7 +19,7 @@ export default function DeleteCompanyButton({
       onSubmit={(e) => {
         if (!confirm(`「${companyName}」を削除しますか？`)) e.preventDefault();
       }}
-      className="absolute top-3 right-3"
+      className={className}
     >
       <input type="hidden" name="id" value={companyId} />
       <button type="submit" aria-label="削除" className="text-gray-300 hover:text-red-500">

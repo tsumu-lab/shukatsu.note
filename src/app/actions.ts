@@ -466,3 +466,64 @@ export async function restoreInternNote(formData: FormData) {
   await prisma.internNote.update({ where: { id }, data: { deletedAt: null } });
   redirect(`/companies/${note.companyId}?tab=intern`);
 }
+
+// 企業のピン留めを切り替え
+export async function togglePinCompany(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  const pinned = formData.get("pinned") === "true";
+  await prisma.company.updateMany({ where: { id, userId }, data: { pinned } });
+  redirect("/");
+}
+
+// 企業メモのピン留めを切り替え
+export async function togglePinMemoEntry(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  const companyId = Number(formData.get("companyId"));
+  const pinned = formData.get("pinned") === "true";
+  await assertOwnsCompany(companyId, userId);
+  await prisma.memoEntry.update({ where: { id }, data: { pinned } });
+  redirect(`/companies/${companyId}?tab=memo`);
+}
+
+// ESのピン留めを切り替え
+export async function togglePinEntrySheet(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  const companyId = Number(formData.get("companyId"));
+  const pinned = formData.get("pinned") === "true";
+  await prisma.entrySheet.updateMany({ where: { id, companyId, company: { userId } }, data: { pinned } });
+  redirect(`/companies/${companyId}?tab=es`);
+}
+
+// 面接記録のピン留めを切り替え
+export async function togglePinInterview(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  const companyId = Number(formData.get("companyId"));
+  const pinned = formData.get("pinned") === "true";
+  await prisma.interview.updateMany({ where: { id, companyId, company: { userId } }, data: { pinned } });
+  redirect(`/companies/${companyId}?tab=interview`);
+}
+
+// インターンメモのピン留めを切り替え
+export async function togglePinInternNote(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  const companyId = Number(formData.get("companyId"));
+  const pinned = formData.get("pinned") === "true";
+  await assertOwnsCompany(companyId, userId);
+  await prisma.internNote.update({ where: { id }, data: { pinned } });
+  redirect(`/companies/${companyId}?tab=intern`);
+}
+
+// 個人メモ（ガクチカ等）のピン留めを切り替え
+export async function togglePinNote(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  const category = formData.get("category") as string;
+  const pinned = formData.get("pinned") === "true";
+  await prisma.personalNote.updateMany({ where: { id, userId }, data: { pinned } });
+  redirect(`/notes/${category}`);
+}

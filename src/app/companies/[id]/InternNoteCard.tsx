@@ -2,8 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { getClickOffset } from "@/lib/clickToCaret";
+import PinButton from "@/app/PinButton";
+import { togglePinInternNote } from "@/app/actions";
 
-type InternNote = { id: number; content: string };
+type InternNote = { id: number; content: string; pinned: boolean };
 
 export default function InternNoteCard({
   note,
@@ -63,9 +65,21 @@ export default function InternNoteCard({
     );
   }
 
-  return (
-    <button onClick={handleOpen} className="block text-left w-full text-sm whitespace-pre-wrap bg-gray-50 rounded p-3">
-      {note.content}
-    </button>
+    return (
+    <div className="flex items-start gap-2">
+      <button
+        onClick={handleOpen}
+        className="flex-1 text-left text-sm whitespace-pre-wrap rounded p-3"
+        style={{ backgroundColor: "var(--color-paper)" }}
+      >
+        {note.content}
+      </button>
+      <PinButton
+        pinned={note.pinned}
+        formData={{ id: note.id, companyId }}
+        action={togglePinInternNote}
+        className="pt-3"
+      />
+    </div>
   );
 }
