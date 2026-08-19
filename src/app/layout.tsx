@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Zen_Maru_Gothic, Zen_Kaku_Gothic_New } from "next/font/google";
 import "./globals.css";
-import AuthButton from "./AuthButton";
 
 // 見出し用フォント。Next.jsの型定義の都合で subsets は "latin" 指定ですが、
 // 実際には日本語のグリフも一緒に読み込まれます（next/font/google の既知の仕様）
@@ -29,9 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja" className={`${zenMaru.variable} ${zenKaku.variable}`}>
       <body>
-                <header className="px-6 py-3 flex justify-end">
-          <AuthButton />
-        </header>
+        
         {children}
       </body>
     </html>

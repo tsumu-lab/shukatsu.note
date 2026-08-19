@@ -9,6 +9,7 @@ import { Trash2 } from "lucide-react";
 import DeleteCompanyButton from "./DeleteCompanyButton";
 import HomeAddReminderForm from "./HomeAddReminderForm";
 import { createReminder } from "@/app/actions";
+import AuthButton from "./AuthButton";
 
 
 export default async function Home() {
@@ -32,6 +33,10 @@ export default async function Home() {
   ]);
 
   return (
+    <>
+    <header className="flex justify-end mb-2">
+        <AuthButton />
+    </header>
     <main className="max-w-2xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-6">就活ノート</h1>
       <UndoBanner actions={{ company: restoreCompany }} />
@@ -55,7 +60,7 @@ export default async function Home() {
         )}
 
         {companies.map((company) => (
-          <div key={company.id} className="surface-card rounded-2xl p-4 relative">
+          <div key={company.id} className="rounded-2xl p-4 relative" style={{ backgroundColor: "var(--color-company-bg)" }}>
             <DeleteCompanyButton
               companyId={company.id}
               companyName={company.name}
@@ -92,5 +97,6 @@ export default async function Home() {
         ))}
       </div>
     </main>
+    </>
   );
 }

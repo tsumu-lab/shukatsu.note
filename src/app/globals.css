@@ -29,6 +29,7 @@ body {
 button:not(:disabled),
 a {
   transition: opacity 0.15s ease;
+  cursor: pointer;
 }
 
 button:not(:disabled):hover,
@@ -61,6 +62,7 @@ a:hover {
   --color-personal: #C97B93;         /* 個人のリマインダー */
   --color-personal-tint: #F9DDE3;
   --color-personal-tint-hover: #F3C7D2;
+  --color-company-bg:  #FFFAF2 /* #FEFEFA; トップの企業カード／企業ページ背景 */
 }
 
 .surface-card {
@@ -69,8 +71,8 @@ a:hover {
 
 /* リマインダー1件分。typeで色を出し分け、hoverで少し濃くなる */
 .reminder-row {
-  border-radius: 12px;
-  padding: 10px 14px;
+  border-radius: 10px;
+  padding: 7px 12px;
   transition: background-color 0.15s ease;
   cursor: pointer;
 }
@@ -99,4 +101,17 @@ h1, h2, h3, .font-heading {
 
 .surface-card {
   background-color: var(--color-surface);
+}
+
+.tab-btn {
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-taupe);
+  border-radius: 12px 12px 0 0;
+  transition: background-color 0.15s ease;
+}
+.tab-btn.active {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
 }

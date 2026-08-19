@@ -35,7 +35,7 @@ export default async function NotesByCategoryPage({
       <h1 className="text-2xl font-bold mt-2 mb-6">{CATEGORY_LABELS[category]}</h1>
 
       <div className="space-y-4 mb-6">
-        {notes.length === 0 && <p className="text-gray-400 text-sm">まだメモがありません</p>}
+        
         {notes.map((note) => (
           <NoteCard
             key={`${note.id}-${note.updatedAt.getTime()}`}

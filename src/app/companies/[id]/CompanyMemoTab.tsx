@@ -27,7 +27,7 @@ export default function CompanyMemoTab({
           deleteMemoEntry={deleteMemoEntry}
         />
       ))}
-      {memoEntries.length === 0 && <p className="text-sm text-gray-400">まだメモがありません</p>}
+      
       <AddMemoEntryForm companyId={companyId} createMemoEntry={createMemoEntry} />
     </div>
   );

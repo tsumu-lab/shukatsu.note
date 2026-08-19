@@ -98,12 +98,11 @@ export default function EntrySheetCard({
           <button type="button" onClick={exitEdit} className="text-sm text-gray-500">
             キャンセル
           </button>
-          <button
+            <button
             type="submit"
             formAction={deleteEntrySheet}
             onClick={(e) => {
               if (!confirm("この設問を削除しますか？")) e.preventDefault();
-              else exitEdit();
             }}
             aria-label="削除"
             className="text-gray-400 hover:text-red-500"

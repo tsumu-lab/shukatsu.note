@@ -17,8 +17,7 @@ export default function InterviewTab({
   deleteInterview: (formData: FormData) => void;
 }) {
   return (
-    <div className="space-y-6">
-      <div className="space-y-6">
+      <div className="space-y-3">
         {interviews.map((iv) => (
           <InterviewCard
             key={iv.id}
@@ -28,8 +27,6 @@ export default function InterviewTab({
             deleteInterview={deleteInterview}
           />
         ))}
-        {interviews.length === 0 && <p className="text-sm text-gray-400">まだ面接記録がありません</p>}
-      </div>
       <AddInterviewForm companyId={companyId} createInterview={createInterview} />
     </div>
   );

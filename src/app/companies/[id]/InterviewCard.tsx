@@ -68,12 +68,11 @@ export default function InterviewCard({
           <button type="button" onClick={exitEdit} className="text-sm text-gray-500">
             キャンセル
           </button>
-          <button
+           <button
             type="submit"
             formAction={deleteInterview}
             onClick={(e) => {
               if (!confirm("この面接記録を削除しますか？")) e.preventDefault();
-              else exitEdit();
             }}
             aria-label="削除"
             className="text-gray-400 hover:text-red-500"

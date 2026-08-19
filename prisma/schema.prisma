@@ -31,6 +31,7 @@ model Company {
   memoEntries MemoEntry[]
   createdAt   DateTime     @default(now())
   deletedAt   DateTime?    // ★追加
+  inned Boolean @default(false)
 }
 
 model EntrySheet {
@@ -44,6 +45,7 @@ model EntrySheet {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // ★追加
+  pinned Boolean @default(false)
 }
 
 model Reminder {
@@ -71,6 +73,7 @@ model Interview {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // ★追加
+  pinned Boolean @default(false)
 }
 
 model InternNote {
@@ -80,6 +83,7 @@ model InternNote {
   content   String
   createdAt DateTime  @default(now())
   deletedAt DateTime? // ★追加
+  pinned Boolean @default(false)
 }
 
 model MemoEntry {
@@ -90,6 +94,7 @@ model MemoEntry {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // ★追加
+  pinned Boolean @default(false)
 }
 
 model PersonalNote {
@@ -101,6 +106,7 @@ model PersonalNote {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  pinned Boolean @default(false)
 }
 
 model User {

@@ -22,7 +22,7 @@ export default function ReminderBoard({ reminders }: { reminders: ReminderWithCo
           <p className="text-xs font-semibold mb-1.5" style={{ color: "var(--color-taupe)" }}>
             {group.label}
           </p>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {group.items.map((item) => (
               <ReminderBoardItem
                 key={item.id}

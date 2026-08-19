@@ -27,7 +27,7 @@ export default function InternTab({
           deleteInternNote={deleteInternNote}
         />
       ))}
-      {internNotes.length === 0 && <p className="text-sm text-gray-400">まだメモがありません</p>}
+
       <AddInternNoteForm companyId={companyId} createInternNote={createInternNote} />
     </div>
   );
