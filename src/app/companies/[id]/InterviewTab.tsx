@@ -1,7 +1,7 @@
 import InterviewCard from "./InterviewCard";
 import AddInterviewForm from "./AddInterviewForm";
 
-type Interview = { id: number; question: string; answer: string | null; memo: string | null };
+type Interview = { id: number; question: string; answer: string | null; memo: string | null; pinned: boolean  };
 
 export default function InterviewTab({
   companyId,

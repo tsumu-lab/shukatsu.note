@@ -1,7 +1,7 @@
 import MemoEntryCard from "./MemoEntryCard";
 import AddMemoEntryForm from "./AddMemoEntryForm";
 
-type MemoEntry = { id: number; content: string };
+type MemoEntry = { id: number; content: string; pinned: boolean };
 
 export default function CompanyMemoTab({
   companyId,

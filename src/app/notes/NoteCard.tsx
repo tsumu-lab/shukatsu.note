@@ -9,6 +9,7 @@ type Note = {
   id: number;
   title: string;
   content: string;
+  pinned: boolean;
 };
 
 export default function NoteCard({
@@ -54,17 +55,7 @@ export default function NoteCard({
   }
 
   return (
-    /** 
     <div className="border rounded-lg p-4 space-y-2">
-      <div className="flex justify-between items-center">
-        <p className="font-medium">{note.title}</p>
-        <button onClick={() => setIsEditing(true)} aria-label="編集" className="text-gray-400 hover:text-blue-600">
-          <Pencil size={14} />
-        </button>
-      </div>
-      <p className="text-sm whitespace-pre-wrap bg-gray-100 rounded p-3">{note.content}</p>
-    </div>
-    */
       <div className="flex justify-between items-center">
         <p className="font-medium">{note.title}</p>
         <div className="flex items-center gap-2">
@@ -74,5 +65,7 @@ export default function NoteCard({
           <PinButton pinned={note.pinned} formData={{ id: note.id, category }} action={togglePinNote} />
         </div>
       </div>
+      <p className="text-sm whitespace-pre-wrap bg-gray-100 rounded p-3">{note.content}</p>
+    </div>
   );
 }
