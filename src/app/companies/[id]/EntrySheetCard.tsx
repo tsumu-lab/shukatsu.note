@@ -128,7 +128,7 @@ export default function EntrySheetCard({
           )}
         </p>
         <div className="flex items-center gap-2">
-          <PinButton pinned={es.pinned} formData={{ id: es.id, companyId }} action={togglePinEntrySheet} />
+          
         <button
           onClick={() => {
             if (isLocked()) requestSaveHint();
@@ -139,6 +139,7 @@ export default function EntrySheetCard({
         >
           <Pencil size={14} />
         </button>
+        <PinButton pinned={es.pinned} formData={{ id: es.id, companyId }} action={togglePinEntrySheet} />
         </div>
       </div>
       <p className="text-sm whitespace-pre-wrap rounded p-3" style={{ backgroundColor: "var(--color-gre)" }}>{es.answer}</p>

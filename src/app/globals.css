@@ -48,7 +48,7 @@ a:hover {
 
 /* === デザイン刷新：色の変数 === */
 :root {
-  --color-paper: #f6ead4;        /* ページ全体の背景（白クリーム） */
+  --color-paper: #ede8e1;        /* ページ全体の背景（白クリーム）#f6ead4 #ede8e1*/
   --color-surface: #FAFAFA;      /* カードの背景（白） */
   --color-accent: #4e6b2c;       /* ボタンなどのメインカラー */
   --color-ink: #3A332B;

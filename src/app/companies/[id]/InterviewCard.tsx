@@ -93,7 +93,7 @@ export default function InterviewCard({
       <div className="flex justify-between items-center">
         <p className="font-medium">{interview.question}</p>
         <div className="flex items-center gap-2">
-          <PinButton pinned={interview.pinned} formData={{ id: interview.id, companyId }} action={togglePinInterview} />
+          
         <button
           onClick={() => {
             if (isLocked()) requestSaveHint();
@@ -104,6 +104,7 @@ export default function InterviewCard({
         >
           <Pencil size={14} />
         </button>
+        <PinButton pinned={interview.pinned} formData={{ id: interview.id, companyId }} action={togglePinInterview} />
         </div>
       </div>
       {interview.answer && (
