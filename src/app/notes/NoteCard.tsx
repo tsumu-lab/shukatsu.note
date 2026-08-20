@@ -7,7 +7,7 @@ import { togglePinNote } from "@/app/actions";
 
 type Note = {
   id: number;
-  title: string;
+  title: string | null;
   content: string;
   pinned: boolean;
 };

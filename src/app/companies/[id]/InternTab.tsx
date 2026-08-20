@@ -1,7 +1,7 @@
 import InternNoteCard from "./InternNoteCard";
 import AddInternNoteForm from "./AddInternNoteForm";
 
-type InternNote = { id: number; content: string; pinned: boolean };
+type InternNote = { id: number; title: string | null; content: string; pinned: boolean };
 
 export default function InternTab({
   companyId,

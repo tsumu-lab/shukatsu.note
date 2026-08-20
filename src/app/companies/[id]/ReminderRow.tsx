@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Calendar, Trash2 } from "lucide-react";
 import { getClickOffset } from "@/lib/clickToCaret";
 import { formatReminderDate, toDatetimeLocalValue } from "@/lib/dateFormat";
-import { useEditGuard, isLocked, requestSaveHint, hintActive } from "./EditGuardContext";
+import { useEditGuard } from "./EditGuardContext";
 import SaveHint from "./SaveHint";
 
 type Reminder = {
