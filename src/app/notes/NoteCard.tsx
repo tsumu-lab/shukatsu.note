@@ -30,7 +30,7 @@ export default function NoteCard({
         <input type="hidden" name="category" value={category} />
         <input
           name="title"
-          defaultValue={note.title}
+          defaultValue={note.title ?? ""}
           required
           autoFocus
           className="w-full px-1 py-1 font-medium"
