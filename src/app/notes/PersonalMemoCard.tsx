@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import PinButton from "@/app/PinButton";
 import { togglePinNote } from "@/app/actions";
-import { useEditGuard } from "./EditGuardContext";
+import { useEditGuard } from "@/app/companies/[id]/EditGuardContext";
 
 type Note = { id: number; title: string | null; content: string; pinned: boolean };
 
