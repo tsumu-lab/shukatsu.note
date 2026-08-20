@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Calendar, Pencil, Trash2 } from "lucide-react";
 import { getClickOffset } from "@/lib/clickToCaret";
-import { toDatetimeLocalValue } from "@/lib/dateFormat";
+import { toDatetimeLocalValue, formatTimeOnly, hasTimeSet } from "@/lib/dateFormat";
 
 type Item = {
   id: number;
@@ -96,7 +96,12 @@ export default function ReminderBoardItem({
           >
             {item.company?.name}
           </span>
-          <span className="truncate">{item.title}</span>
+          <span className="truncate flex-1">{item.title}</span>
+          {item.dueDate && hasTimeSet(new Date(item.dueDate)) && (
+            <span className="text-xs flex-shrink-0" style={{ color: "var(--color-taupe)" }}>
+              {formatTimeOnly(new Date(item.dueDate))}
+            </span>
+          )}
         </Link>
         <Link
           href={`/companies/${item.companyId}?openReminder=${item.id}`}

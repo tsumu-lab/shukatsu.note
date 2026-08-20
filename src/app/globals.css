@@ -48,8 +48,8 @@ a:hover {
 
 /* === デザイン刷新：色の変数 === */
 :root {
-  --color-paper: #FFFAF2;        /* ページ全体の背景（白クリーム） */
-  --color-surface: #FFFFFF;      /* カードの背景（白） */
+  --color-paper: #f6ead4;        /* ページ全体の背景（白クリーム） */
+  --color-surface: #FAFAFA;      /* カードの背景（白） */
   --color-accent: #4e6b2c;       /* ボタンなどのメインカラー */
   --color-ink: #3A332B;
   --color-taupe: #8A8072;
@@ -62,7 +62,11 @@ a:hover {
   --color-personal: #C97B93;         /* 個人のリマインダー */
   --color-personal-tint: #F9DDE3;
   --color-personal-tint-hover: #F3C7D2;
-  --color-company-bg:  #FEFEFA /* #FEFEFA; トップの企業カード／企業ページ背景 */
+  --color-company-bg:  #f7f1e4; /* #FEFEFA; トップの企業カード／企業ページ背景 */
+
+  --color-memo: #fff9e3;
+
+  --color-gre: #f0f0f0;
 }
 
 .surface-card {
@@ -114,4 +118,9 @@ h1, h2, h3, .font-heading {
 .tab-btn.active {
   background-color: var(--color-surface);
   color: var(--color-ink);
+}
+
+@keyframes sh-pop {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useEditGuard } from "./EditGuardContext";
 
 const TABS = [
   { key: "memo", label: "メモ" },
@@ -31,7 +32,13 @@ export default function CompanyTabs({
   const router = useRouter();
   const pathname = usePathname();
 
+  const { isLocked, requestSaveHint } = useEditGuard();
+
   const handleSelect = (key: TabKey) => {
+    if (isLocked()) {
+      requestSaveHint();
+      return;
+    }
     setActive(key);
     router.replace(`${pathname}?tab=${key}`, { scroll: false });
   };
@@ -42,6 +49,7 @@ export default function CompanyTabs({
     interview: interviewTab,
     intern: internTab,
   };
+
 
   return (
     <div>

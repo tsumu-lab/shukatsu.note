@@ -1,31 +1,53 @@
 "use client";
 
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 
-// 「今、保存されていない編集中のカードがあるか」をアプリの複数の場所で共有するための仕組み
+type SaveFn = () => Promise<void> | void;
+
 const EditGuardContext = createContext<{
   markEditing: (id: string, editing: boolean) => void;
-  confirmLeave: () => boolean;
+  registerReminderSave: (id: string, saveFn: SaveFn | null) => void;
+  saveAllReminders: () => Promise<void>;
+  isLocked: () => boolean;
+  requestSaveHint: () => void;
+  hintActive: boolean;
 } | null>(null);
 
 export function EditGuardProvider({ children }: { children: React.ReactNode }) {
-  // Setを使って、複数のカードが同時に編集中でも正しく管理する
   const editingIds = useRef<Set<string>>(new Set());
+  const reminderSaves = useRef<Map<string, SaveFn>>(new Map());
+  const [hintActive, setHintActive] = useState(false);
+  const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const markEditing = (id: string, editing: boolean) => {
     if (editing) editingIds.current.add(id);
     else editingIds.current.delete(id);
   };
 
-  // 移動しようとした時に呼ぶ。編集中が無ければtrue(そのまま移動してOK)、
-  // あれば確認を出し、OKなら移動を許可(true)、キャンセルなら移動を止める(false)
-  const confirmLeave = () => {
-    if (editingIds.current.size === 0) return true;
-    return confirm("保存されていない変更があります。保存せずに移動しますか？");
+  const registerReminderSave = (id: string, saveFn: SaveFn | null) => {
+    if (saveFn) reminderSaves.current.set(id, saveFn);
+    else reminderSaves.current.delete(id);
+  };
+
+  const saveAllReminders = async () => {
+    const saves = Array.from(reminderSaves.current.values());
+    reminderSaves.current.clear();
+    await Promise.all(saves.map((fn) => fn()));
+  };
+
+  const isLocked = () => editingIds.current.size > 0;
+
+  // 他を触ろうとした時に呼ぶ。今開いているフォームの吹き出しを2秒だけ出す
+  const requestSaveHint = () => {
+    setHintActive(true);
+    if (hintTimer.current) clearTimeout(hintTimer.current);
+    hintTimer.current = setTimeout(() => setHintActive(false), 2000);
   };
 
   return (
-    <EditGuardContext.Provider value={{ markEditing, confirmLeave }}>
+    <EditGuardContext.Provider
+      value={{ markEditing, registerReminderSave, saveAllReminders, isLocked, requestSaveHint, hintActive }}
+    >
       {children}
     </EditGuardContext.Provider>
   );

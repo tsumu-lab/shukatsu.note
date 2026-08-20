@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useEditGuard } from "./EditGuardContext";
+import SaveHint from "./SaveHint";
 
 export default function AddEntrySheetForm({
   companyId,
@@ -10,67 +12,49 @@ export default function AddEntrySheetForm({
   addEntrySheet: (formData: FormData) => void;
 }) {
   const [isAdding, setIsAdding] = useState(false);
-  const [maxLength, setMaxLength] = useState<number | null>(null);
-  const [answerText, setAnswerText] = useState("");
+  const { markEditing, isLocked, requestSaveHint, hintActive } = useEditGuard();
+
+  useEffect(() => {
+    markEditing(`add-es-${companyId}`, isAdding);
+    return () => markEditing(`add-es-${companyId}`, false);
+  }, [isAdding]);
 
   if (!isAdding) {
     return (
-      <button onClick={() => setIsAdding(true)} className="text-sm text-blue-600 underline">
+      <button
+        onClick={() => {
+          if (isLocked()) requestSaveHint();
+          else setIsAdding(true);
+        }}
+        className="text-sm"
+        style={{ color: "var(--color-accent)" }}
+      >
         ＋ 設問を追加
       </button>
     );
   }
 
-  const isOver = maxLength ? answerText.length > maxLength : false;
-
   return (
     <form action={addEntrySheet} className="space-y-3">
       <input type="hidden" name="companyId" value={companyId} />
       <div>
-        <label className="block text-sm mb-1">設問</label>
-        <div className="flex items-center gap-2">
-          <input name="question" required autoFocus className="flex-1 border rounded px-3 py-2" />
-          <input
-            name="maxLength"
-            type="number"
-            min={1}
-            onChange={(e) => setMaxLength(e.target.value ? Number(e.target.value) : null)}
-            placeholder="字数"
-            className="w-20 border rounded px-2 py-2 text-sm"
-          />
-          <span className="text-xs text-gray-400 whitespace-nowrap">字以内</span>
-        </div>
+        <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>設問</label>
+        <input name="question" required autoFocus className="w-full rounded px-3 py-2 border-none" style={{ backgroundColor: "var(--color-surface)" }} />
       </div>
       <div>
-        <label className="block text-sm mb-1">回答</label>
-        <div className="relative">
-          <textarea
-            name="answer"
-            value={answerText}
-            onChange={(e) => setAnswerText(e.target.value)}
-            required
-            rows={5}
-            className="w-full border rounded px-3 pb-6 py-2"
-          />
-          <span
-            className={`absolute bottom-2 right-3 text-xs ${
-              isOver ? "text-red-500" : "text-gray-400"
-            }`}
-          >
-            {answerText.length}
-            {maxLength ? ` / ${maxLength}` : ""}
-          </span>
-        </div>
+        <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>回答（任意）</label>
+        <textarea name="answer" rows={4} className="w-full rounded px-3 py-2 border-none" style={{ backgroundColor: "var(--color-gre)" }} />
       </div>
       <div>
-        <label className="block text-sm mb-1">メモ（任意）</label>
-        <textarea name="memo" rows={2} className="w-full border rounded px-3 py-2" />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>メモ（任意）</label>
+        <textarea name="memo" rows={2} className="w-full rounded px-3 py-2 border-none" style={{ backgroundColor: "var(--color-memo)" }} />
       </div>
-      <div className="flex gap-2">
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+      <div className="flex gap-2 relative">
+        <SaveHint show={hintActive} />
+        <button type="submit" className="text-white px-4 py-2 rounded" style={{ backgroundColor: "var(--color-accent)" }}>
           保存
         </button>
-        <button type="button" onClick={() => setIsAdding(false)} className="text-sm text-gray-500">
+        <button type="button" onClick={() => setIsAdding(false)} className="text-sm" style={{ color: "var(--color-taupe)" }}>
           キャンセル
         </button>
       </div>

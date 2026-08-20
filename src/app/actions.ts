@@ -274,33 +274,84 @@ export async function updateCompanyMemo(formData: FormData) {
   redirect(`/companies/${companyId}?tab=memo`);
 }
 
-// 企業メモを新規追加
+
+
 export async function createMemoEntry(formData: FormData) {
   const userId = await requireUserId();
   const companyId = Number(formData.get("companyId"));
   await assertOwnsCompany(companyId, userId);
 
+  const title = (formData.get("title") as string) || null;
   const content = formData.get("content") as string;
-  if (!content?.trim()) redirect(`/companies/${companyId}?tab=memo`); // 空なら何もしない
+  if (!content?.trim()) redirect(`/companies/${companyId}?tab=memo`);
 
-  await prisma.memoEntry.create({ data: { companyId, content } });
+  await prisma.memoEntry.create({ data: { companyId, title, content } });
   redirect(`/companies/${companyId}?tab=memo`);
 }
 
-// 企業メモを更新
 export async function updateMemoEntry(formData: FormData) {
   const userId = await requireUserId();
   const id = Number(formData.get("id"));
   const companyId = Number(formData.get("companyId"));
   await assertOwnsCompany(companyId, userId);
 
+  const title = (formData.get("title") as string) || null;
   const content = formData.get("content") as string;
-  await prisma.memoEntry.updateMany({
-    where: { id, companyId },
-    data: { content },
-  });
+  await prisma.memoEntry.update({ where: { id }, data: { title, content } });
   redirect(`/companies/${companyId}?tab=memo`);
 }
+
+export async function createInternNote(formData: FormData) {
+  const userId = await requireUserId();
+  const companyId = Number(formData.get("companyId"));
+  await assertOwnsCompany(companyId, userId);
+
+  const title = (formData.get("title") as string) || null;
+  const content = formData.get("content") as string;
+  if (!content?.trim()) redirect(`/companies/${companyId}?tab=intern`);
+
+  await prisma.internNote.create({ data: { companyId, title, content } });
+  redirect(`/companies/${companyId}?tab=intern`);
+}
+
+export async function updateInternNote(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  const companyId = Number(formData.get("companyId"));
+  await assertOwnsCompany(companyId, userId);
+
+  const title = (formData.get("title") as string) || null;
+  const content = formData.get("content") as string;
+  await prisma.internNote.update({ where: { id }, data: { title, content } });
+  redirect(`/companies/${companyId}?tab=intern`);
+}
+
+export async function createPersonalMemo(formData: FormData) {
+  const userId = await requireUserId();
+  const title = (formData.get("title") as string) || null;
+  const content = formData.get("content") as string;
+  if (!content?.trim()) redirect("/notes/memo");
+
+  await prisma.personalNote.create({
+    data: { userId, category: "memo", title, content },
+  });
+  redirect("/notes/memo");
+}
+
+export async function updatePersonalMemo(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  const title = (formData.get("title") as string) || null;
+  const content = formData.get("content") as string;
+
+  await prisma.personalNote.updateMany({
+    where: { id, userId, category: "memo" },
+    data: { title, content },
+  });
+  redirect("/notes/memo");
+}
+
+
 
 // 面接記録を新規作成
 export async function createInterview(formData: FormData) {
@@ -338,33 +389,6 @@ export async function updateInterview(formData: FormData) {
   redirect(`/companies/${companyId}?tab=interview`);
 }
 
-// インターンメモを新規追加
-export async function createInternNote(formData: FormData) {
-  const userId = await requireUserId();
-  const companyId = Number(formData.get("companyId"));
-  await assertOwnsCompany(companyId, userId);
-
-  const content = formData.get("content") as string;
-  if (!content?.trim()) redirect(`/companies/${companyId}?tab=intern`);
-
-  await prisma.internNote.create({ data: { companyId, content } });
-  redirect(`/companies/${companyId}?tab=intern`);
-}
-
-// インターンメモを更新
-export async function updateInternNote(formData: FormData) {
-  const userId = await requireUserId();
-  const id = Number(formData.get("id"));
-  const companyId = Number(formData.get("companyId"));
-  await assertOwnsCompany(companyId, userId);
-
-  const content = formData.get("content") as string;
-  await prisma.internNote.updateMany({
-    where: { id, companyId },
-    data: { content },
-  });
-  redirect(`/companies/${companyId}?tab=intern`);
-}
 
 
 // 企業を削除（論理削除）
@@ -527,3 +551,17 @@ export async function togglePinNote(formData: FormData) {
   await prisma.personalNote.updateMany({ where: { id, userId }, data: { pinned } });
   redirect(`/notes/${category}`);
 }
+
+
+// 個人メモを削除（内容が空になった時用）
+export async function deletePersonalMemo(formData: FormData) {
+  const userId = await requireUserId();
+  const id = Number(formData.get("id"));
+  await prisma.personalNote.updateMany({
+    where: { id, userId, category: "memo" },
+    data: { deletedAt: new Date() },
+  });
+  redirect("/notes/memo");
+}
+
+

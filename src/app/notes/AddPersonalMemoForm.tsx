@@ -1,18 +1,13 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useEditGuard } from "./EditGuardContext";
 
-export default function AddMemoEntryForm({
-  companyId,
-  createMemoEntry,
+export default function AddPersonalMemoForm({
+  createPersonalMemo,
 }: {
-  companyId: number;
-  createMemoEntry: (formData: FormData) => void;
+  createPersonalMemo: (formData: FormData) => void;
 }) {
   const [isAdding, setIsAdding] = useState(false);
-  const { isLocked, requestSaveHint } = useEditGuard();
-
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleBlur = (e: React.FocusEvent<HTMLFormElement>) => {
@@ -23,24 +18,14 @@ export default function AddMemoEntryForm({
 
   if (!isAdding) {
     return (
-      <button
-        onClick={() => {
-          if (isLocked()) {
-            requestSaveHint();
-            return;
-          }
-          setIsAdding(true);
-        }}
-        className="text-sm text-blue-600 underline"
-      >
+      <button onClick={() => setIsAdding(true)} className="text-sm" style={{ color: "var(--color-accent)" }}>
         ＋ メモを追加
       </button>
     );
   }
 
   return (
-    <form ref={formRef} action={createMemoEntry} onBlur={handleBlur}>
-      <input type="hidden" name="companyId" value={companyId} />
+    <form ref={formRef} action={createPersonalMemo} onBlur={handleBlur}>
       <input
         name="title"
         placeholder="タイトル（任意）"
@@ -50,9 +35,10 @@ export default function AddMemoEntryForm({
         name="content"
         rows={3}
         autoFocus
+        
         placeholder="メモを書く..."
-        className="w-full rounded p-3 text-sm bg-gray-50 border-none focus:outline-none"
-        style={{ backgroundColor: "var(--color-memo)" }}
+        className="w-full rounded p-3 text-sm border-none focus:outline-none"
+        style={{ backgroundColor: "var(--color-surface)" }}
       />
     </form>
   );

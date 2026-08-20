@@ -32,6 +32,8 @@ model Company {
   createdAt   DateTime     @default(now())
   deletedAt   DateTime?    // ★追加
   pinned Boolean @default(false)
+  updatedAt    DateTime  @updatedAt // ★追加：更新のたびに自動で記録される
+  lastViewedAt DateTime? // ★追加：企業ページを開いた日時
 }
 
 model EntrySheet {
@@ -80,8 +82,10 @@ model InternNote {
   id        Int       @id @default(autoincrement())
   company   Company   @relation(fields: [companyId], references: [id])
   companyId Int
+  title     String?   // ★追加
   content   String
   createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt // ★追加
   deletedAt DateTime? // ★追加
   pinned Boolean @default(false)
 }
@@ -90,6 +94,7 @@ model MemoEntry {
   id        Int       @id @default(autoincrement())
   company   Company   @relation(fields: [companyId], references: [id])
   companyId Int
+  title     String?   // ★追加
   content   String
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -98,15 +103,16 @@ model MemoEntry {
 }
 
 model PersonalNote {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  category  String   @default("self_pr")
-  title     String
+  category  String    @default("self_pr")
+  title     String?   // ★変更：メモ系はタイトル無しで使うため任意に
   content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  pinned Boolean @default(false)
+  pinned    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // ★追加：企業メモと同じ「空になったら自動削除」に対応
 }
 
 model User {

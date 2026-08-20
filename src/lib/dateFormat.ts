@@ -12,3 +12,14 @@ export function formatReminderDate(date: Date): string {
   const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0;
   return hasTime ? `${dateStr} ${pad(date.getHours())}:${pad(date.getMinutes())}` : dateStr;
 }
+
+// 時刻だけを表示（例: "13:30"）
+export function formatTimeOnly(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+// 実際に時刻が設定されているか（0:00ちょうどは「未設定」扱い）
+export function hasTimeSet(date: Date): boolean {
+  return date.getHours() !== 0 || date.getMinutes() !== 0;
+}

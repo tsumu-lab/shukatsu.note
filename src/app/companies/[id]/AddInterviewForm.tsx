@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useEditGuard } from "./EditGuardContext";
+import SaveHint from "./SaveHint";
 
 export default function AddInterviewForm({
   companyId,
@@ -10,10 +12,23 @@ export default function AddInterviewForm({
   createInterview: (formData: FormData) => void;
 }) {
   const [isAdding, setIsAdding] = useState(false);
+  const { markEditing, isLocked, requestSaveHint, hintActive } = useEditGuard();
+
+  useEffect(() => {
+    markEditing(`add-es-${companyId}`, isAdding);
+    return () => markEditing(`add-es-${companyId}`, false);
+  }, [isAdding]);
 
   if (!isAdding) {
     return (
-      <button onClick={() => setIsAdding(true)} className="text-sm text-blue-600 underline">
+      <button
+        onClick={() => {
+          if (isLocked()) requestSaveHint();
+          else setIsAdding(true);
+        }}
+        className="text-sm"
+        style={{ color: "var(--color-accent)" }}
+      >
         ＋ 面接記録を追加
       </button>
     );
@@ -23,22 +38,23 @@ export default function AddInterviewForm({
     <form action={createInterview} className="space-y-3">
       <input type="hidden" name="companyId" value={companyId} />
       <div>
-        <label className="block text-sm mb-1">質問</label>
-        <input name="question" required autoFocus className="w-full border rounded px-3 py-2" />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>設問</label>
+        <input name="question" required autoFocus className="w-full rounded px-3 py-2 border-none" style={{ backgroundColor: "var(--color-surface)" }} />
       </div>
       <div>
-        <label className="block text-sm mb-1">回答（任意）</label>
-        <textarea name="answer" rows={4} className="w-full border rounded px-3 py-2" />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>回答（任意）</label>
+        <textarea name="answer" rows={4} className="w-full rounded px-3 py-2 border-none" style={{ backgroundColor: "var(--color-gre)" }} />
       </div>
       <div>
-        <label className="block text-sm mb-1">メモ（任意）</label>
-        <textarea name="memo" rows={2} className="w-full border rounded px-3 py-2" />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-taupe)" }}>メモ（任意）</label>
+        <textarea name="memo" rows={2} className="w-full rounded px-3 py-2 border-none" style={{ backgroundColor: "var(--color-memo)" }} />
       </div>
-      <div className="flex gap-2">
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+      <div className="flex gap-2 relative">
+        <SaveHint show={hintActive} />
+        <button type="submit" className="text-white px-4 py-2 rounded" style={{ backgroundColor: "var(--color-accent)" }}>
           保存
         </button>
-        <button type="button" onClick={() => setIsAdding(false)} className="text-sm text-gray-500">
+        <button type="button" onClick={() => setIsAdding(false)} className="text-sm" style={{ color: "var(--color-taupe)" }}>
           キャンセル
         </button>
       </div>
