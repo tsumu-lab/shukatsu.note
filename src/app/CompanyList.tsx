@@ -51,6 +51,33 @@ export default function CompanyList({
   const [sortKey, setSortKey] = useState<SortKey>("createdAt");
   const [ascending, setAscending] = useState(false);
   const [reminderPriority, setReminderPriority] = useState(true);
+
+     const isFirstRender = useRef(true);
+
+  // 並び替え設定だけを、最初に1回読み込む（検索・状況フィルターは対象外）
+  useEffect(() => {
+    const saved = localStorage.getItem("companySortPref");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      setSortKey(parsed.sortKey ?? "createdAt");
+      setAscending(parsed.ascending ?? false);
+      setReminderPriority(parsed.reminderPriority ?? true);
+    }
+  }, []);
+
+  // 並び替え設定が変わるたびに保存する。
+  // ただし一番最初の実行(＝ページを開いた瞬間、読み込みが終わる前の古い値)だけはスキップする
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    localStorage.setItem(
+      "companySortPref",
+      JSON.stringify({ sortKey, ascending, reminderPriority })
+    );
+  }, [sortKey, ascending, reminderPriority]);
+
   const statusRef = useRef<HTMLDivElement>(null);
   const sortRef = useRef<HTMLDivElement>(null);
 
