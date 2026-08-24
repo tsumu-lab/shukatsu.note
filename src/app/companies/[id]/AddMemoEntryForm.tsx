@@ -31,7 +31,8 @@ export default function AddMemoEntryForm({
           }
           setIsAdding(true);
         }}
-        className="text-sm text-blue-600 underline"
+        className="text-sm "
+        style={{ color: "var(--color-accent)" }}
       >
         ＋ メモを追加
       </button>

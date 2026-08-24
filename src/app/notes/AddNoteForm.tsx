@@ -13,7 +13,7 @@ export default function AddNoteForm({
 
   if (!isAdding) {
     return (
-      <button onClick={() => setIsAdding(true)} className="text-sm text-blue-600 underline">
+      <button onClick={() => setIsAdding(true)} className="text-sm " style={{ color: "var(--color-accent)" }}>
         ＋ メモを追加
       </button>
     );
