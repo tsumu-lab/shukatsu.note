@@ -64,6 +64,8 @@ a:hover {
   --color-personal-tint-hover: #F3C7D2;
   --color-company-bg:  #f7f1e4; /* #FEFEFA; トップの企業カード／企業ページ背景 */
 
+  --color-item-card: #F3F4F6;   /* ES・面接・notesのカード背景（グレー） */
+
   --color-memo: #fff9e3;
 
   --color-gre: #f0f0f0;

@@ -89,29 +89,40 @@ export default function InterviewCard({
   }
 
   return (
-    <div className="space-y-2">
+    <div className="rounded-xl p-3" style={{ backgroundColor: "var(--color-item-card)" }}>
       <div className="flex justify-between items-center">
         <p className="font-medium">{interview.question}</p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           
-        <button
-          onClick={() => {
-            if (isLocked()) requestSaveHint();
-            else setIsEditing(true);
-          }}
-          aria-label="編集"
-          style={{ color: "var(--color-taupe)" }}
-        >
-          <Pencil size={14} />
-        </button>
-        <PinButton pinned={interview.pinned} formData={{ id: interview.id, companyId }} action={togglePinInterview} />
+           <button
+            onClick={() => {
+              if (isLocked()) requestSaveHint();
+              else setIsEditing(true);
+            }}
+            aria-label="編集"
+            style={{ color: "var(--color-taupe)" }}
+          >
+            <Pencil size={14} />
+          </button>
+          <PinButton pinned={interview.pinned} formData={{ id: interview.id, companyId }} action={togglePinInterview} />
         </div>
       </div>
+
       {interview.answer && (
-        <p className="text-sm whitespace-pre-wrap rounded p-3" style={{ backgroundColor: "var(--color-gre)" }}>{interview.answer}</p>
+        <>
+          <hr style={{ border: "none", borderTop: "1px solid rgba(58,51,43,0.15)", margin: "8px 10px" }} />
+          <p className="text-sm whitespace-pre-wrap">{interview.answer}</p>
+        </>
       )}
+
       {interview.memo && (
-        <p className="text-sm whitespace-pre-wrap rounded p-3" style={{ backgroundColor: "var(--color-memo)" }}>{interview.memo}</p>
+        <div 
+            className="reminder-row company mt-2"
+            style={{ backgroundColor: "var(--color-memo)" }}
+        >
+          <p className="text-sm whitespace-pre-wrap">{interview.memo}</p>
+          
+        </div>
       )}
     </div>
   );

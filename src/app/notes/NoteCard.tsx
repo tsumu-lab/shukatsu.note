@@ -53,7 +53,7 @@ export default function NoteCard({
       </form>
     );
   }
-
+/** 
   return (
     <div className="border rounded-lg p-4 space-y-2">
       <div className="flex justify-between items-center">
@@ -66,6 +66,22 @@ export default function NoteCard({
         </div>
       </div>
       <p className="text-sm whitespace-pre-wrap bg-gray-100 rounded p-3">{note.content}</p>
+    </div>
+  );
+  */
+    return (
+    <div className="rounded-xl p-3" style={{ backgroundColor: "var(--color-item-card)" }}>
+      <div className="flex justify-between items-center">
+        <p className="font-medium">{note.title}</p>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button onClick={() => setIsEditing(true)} aria-label="編集" className="text-gray-400 hover:text-blue-600">
+            <Pencil size={14} />
+          </button>
+          <PinButton pinned={note.pinned} formData={{ id: note.id, category }} action={togglePinNote} />
+        </div>
+      </div>
+      <hr style={{ border: "none", borderTop: "1px solid rgba(58,51,43,0.15)", margin: "8px 10px" }} />
+      <p className="text-sm whitespace-pre-wrap">{note.content}</p>
     </div>
   );
 }

@@ -116,8 +116,8 @@ export default function EntrySheetCard({
     );
   }
 
-  return (
-    <div className="space-y-2">
+    return (
+    <div className="rounded-xl p-3" style={{ backgroundColor: "var(--color-item-card)" }}>
       <div className="flex justify-between items-center">
         <p className="font-medium">
           {es.question}
@@ -127,24 +127,34 @@ export default function EntrySheetCard({
             </span>
           )}
         </p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           
-        <button
-          onClick={() => {
-            if (isLocked()) requestSaveHint();
-            else setIsEditing(true);
-          }}
-          aria-label="編集"
-          style={{ color: "var(--color-taupe)" }}
-        >
-          <Pencil size={14} />
-        </button>
-        <PinButton pinned={es.pinned} formData={{ id: es.id, companyId }} action={togglePinEntrySheet} />
+           <button
+            onClick={() => {
+              if (isLocked()) requestSaveHint();
+              else setIsEditing(true);
+            }}
+            aria-label="編集"
+            style={{ color: "var(--color-taupe)" }}
+          >
+            <Pencil size={14} />
+          </button>
+          <PinButton pinned={es.pinned} formData={{ id: es.id, companyId }} action={togglePinEntrySheet} />
         </div>
       </div>
-      <p className="text-sm whitespace-pre-wrap rounded p-3" style={{ backgroundColor: "var(--color-gre)" }}>{es.answer}</p>
+
+      <hr style={{ border: "none", borderTop: "1px solid rgba(58,51,43,0.15)", margin: "8px 10px" }} />
+
+      <p className="text-sm whitespace-pre-wrap">{es.answer}</p>
+
       {es.memo && (
-        <p className="text-sm whitespace-pre-wrap rounded p-3" style={{ backgroundColor: "var(--color-memo)" }}>{es.memo}</p>
+        <div 
+            className="reminder-row company mt-2"
+            style={{ backgroundColor: "var(--color-memo)" }}
+        >
+          <p className="text-sm whitespace-pre-wrap">{es.memo}</p>
+          
+        </div>
       )}
     </div>
   );
