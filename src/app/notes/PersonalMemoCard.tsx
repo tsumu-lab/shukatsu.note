@@ -62,7 +62,12 @@ export default function PersonalMemoCard({
         className="flex-1 text-left text-sm whitespace-pre-wrap rounded p-3"
         style={{ backgroundColor: "var(--color-memo)" }}
       >
-        {note.title && <p className="font-medium mb-1">{note.title}</p>}
+        {note.title && (
+          <>
+            <p className="font-medium mb-1">{note.title}</p>
+            <hr style={{ border: "none", borderTop: "1px solid rgba(58,51,43,0.15)", margin: "8px 10px" }} />
+          </>
+        )}
         {note.content}
       </button>
       <PinButton pinned={note.pinned} formData={{ id: note.id, category: "memo" }} action={togglePinNote} className="pt-3" />

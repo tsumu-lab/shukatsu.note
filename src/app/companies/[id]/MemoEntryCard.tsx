@@ -85,7 +85,13 @@ export default function MemoEntryCard({
         className="flex-1 text-left text-sm whitespace-pre-wrap rounded p-3"
         style={{ backgroundColor: "var(--color-memo)" }}
       >
-        {entry.title && <p className="font-medium mb-1">{entry.title}</p>}
+        {entry.title && (
+            <>
+              <p className="font-medium mb-1">{entry.title}</p>
+              <hr style={{ border: "none", borderTop: "1px solid rgba(58,51,43,0.15)", margin: "8px 10px" }} />
+            </>
+        )}
+        
         {entry.content}
       </button>
       <PinButton pinned={entry.pinned} formData={{ id: entry.id, companyId }} action={togglePinMemoEntry} className="pt-3" />
